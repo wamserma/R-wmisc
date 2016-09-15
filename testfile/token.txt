@@ -1,0 +1,8 @@
+Hi, use me to	test the
+tokeniser.
+Maybe,use;comma,or;semicolon or XZG or whatever you like.
+I use Windows line endings (CR+LF) so you can test tokenising on different combinations.
+xx
+yy
+zz
+EOF without newline.

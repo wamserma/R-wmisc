@@ -1,0 +1,21 @@
+Package: Wmisc
+Type: Package
+Title: Markus Wamser's miscellaneous helper functions 
+Version: 0.0.1.9001
+Date: 2016-02-01
+Authors@R: person("Markus S.", "Wamser", email = "r-vcd2r@devel.wamser.eu",
+  role = c("aut", "cre"))
+Description: This package is a collection of helper functions that were primarily written for personal use, but might be useful for a wider audience.
+LinkingTo:
+    Rcpp
+Imports:
+    inline,
+    Rcpp
+URL: https://github.com/wamserma/Wmisc/
+BugReports: https://github.com/wamserma/Wmisc/issues
+License: BSD-2 + file LICENSE
+LazyData: TRUE
+RoxygenNote: 5.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

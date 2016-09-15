@@ -1,0 +1,6 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.Rhistory$
+^\.git$
+^README\.md$
+^R/installBuilddeps\.R$

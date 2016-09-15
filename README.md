@@ -1,4 +1,6 @@
-# WMisc - because everyone should have his own misc package
+[![Build Status](https://travis-ci.org/wamserma/R-wmisc.png)](https://travis-ci.org/wamserma/R-wmisc)
+
+# WMisc - because everyone should have his own misc package for R
 
 ## Huh?
 
@@ -10,7 +12,7 @@ This is a collection of helper functions I wrote for myself.
 clone the git repository
 
 ```bash 
-git clone https://github.com/wamserma/WMisc.git 
+git clone https://github.com/wamserma/R-wmisc.git 
 ```
 
 install the build dependencies

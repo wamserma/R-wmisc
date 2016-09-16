@@ -2,5 +2,6 @@
 ^\.Rproj\.user$
 ^\.Rhistory$
 ^\.git$
+^\.travis.yml$
 ^README\.md$
 ^R/installBuilddeps\.R$

@@ -1,33 +1,19 @@
-# Sample .travis.yml for R projects.
-#
-# See README.md for instructions, or for more configuration options,
-# see the wiki:
-#   https://github.com/craigcitro/r-travis/wiki
+language: r
+sudo:false
+cache: packages
 
-language: c
+r:
+  - oldrel
+  - release
+  - devel
 
-env:
-  global:
-    - R_BUILD_ARGS="--no-build-vignettes --no-manual"
-    - R_CHECK_ARGS="--no-build-vignettes --no-manual --as-cran"
+  # be nice and limit workload; queued commits older than this value will not be built
+git:
+  depth: 5
 
-before_install:
-  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
-  - chmod 755 ./travis-tool.sh
-  - ./travis-tool.sh bootstrap
+# currently all doc is done with Markdown  
+latex: false
 
-install:
-  - ./travis-tool.sh install_r Rcpp knitr markdown testthat
-
-script:
-  - ./travis-tool.sh run_tests
-
-after_failure:
-  - ./travis-tool.sh dump_logs
-
-notifications:
-  email:
-    on_success: change
-    on_failure: change
-
+# we don't have any (important) reverse dependencies
+r_check_revdep: false
 

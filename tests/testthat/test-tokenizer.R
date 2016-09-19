@@ -25,20 +25,22 @@ test_that("reading from a closed file returns NA",{
 
 test_that("new tokenizer has default delimiters",{
   expect_warning(tok<-Tokenizer$new())
-  expect_identical(tok$getDelimiters(),c(9,10,13,32))
+  expect_identical(tok$getDelimiters(),as.integer(c(9,10,13,32)))
 })
 
 test_that("modifying delimiters works",{
   expect_warning(tok<-Tokenizer$new())
   tmp<-tok$getDelimiters()
-  tmp[3]<-42
+  tmp[3]<-as.integer(42)
   tok$setDelimiters(tmp)
-  expect_identical(tok$getDelimiters(),c(9,10,42,32))
+  expect_identical(tok$getDelimiters(),as.integer(c(9,10,42,32)))
 })
 
 test_that("Only ASCII-characters (numerical value < 256) accepted.",{
   expect_warning(tok<-Tokenizer$new())
   expect_error(tok$setDelimiters(c(3,4,5,12345)),"Only ASCII.*")
+  expect_error(tok$setDelimiters(c(3,4,-5,8)),"Only ASCII.*")
+  expect_error(tok$setDelimiters(c(3,4,7.2,8)),"Only ASCII.*")
 })
 
 test_that("reading tokens works as expected",{

@@ -43,11 +43,11 @@ Tokenizer <- R6::R6Class("Tokenizer",
                           private$currentPtr <- private$fd$map
                         }
                       }
-                      private$delims <- c(9,10,13,32) # tab, lf, cr, blank
+                      private$delims <- as.integer(c(9,10,13,32)) # tab, lf, cr, blank
 					  reg.finalizer(self,function(e) self$close,onexit = TRUE)
                     }, # end initialize
                     setDelimiters = function(delims) {
-                      if (all(delims<256))
+                      if (all(delims<256) & all(delims>=0) & all(is.integer(delims)))
                         private$delims <- delims
                       else
                         stop("Only ASCII-characters (numerical value < 256) accepted.")

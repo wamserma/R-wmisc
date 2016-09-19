@@ -1,25 +1,67 @@
-#' Create a Tokenizer
+#' Create a \code{Tokenizer} to read string tokens from a memory mapped file.
 #'
-#' Upon creation the Tokenizer will try to map the given file to memory for fast access.
+#' @description Reading and processing tokens from a text file usually is done in three steps: Load the file, cut into tokenst, act upon the resulting vector of strings.
+#' The \code{Tokenizer} aims to simplify and streamline the process, when tokens must be processed in a sequential manner.
 #' 
-#' supported functions:
+#' @details While the life-cycle of the \code{Tokenizer} still requires the user to act in three phases, it abstracts away the nasties of the file access, leverages the powers of the underlying operaring system for prefetching. Most of all, bookkeeping is much simpler: The user simply has to keep track of the object returned by the constructor and is free to pass it around between functions without caring for the current state. The \code{Tokenizer} will also try to close open files by itself, before it ist Garbage Collected.
 #' 
-#' nextToken, setDelimiters , getDelimiters, close
+#' The \code{Tokenizer} is object-oriented, so functions on any instance can be called in a OO style or in more imperative style:
+#' \itemize{
+#'   \item OO style: \code{tok$nextToken()}
+#'   \item imperative style: \code{nextToken(tok)}
+#' }
+#' Both calls will give the same result. 
+#' 
+#' @docType class
+#' @importFrom R6 R6Class
+#' 
+#' @section Methods:
+#' 
+#' \describe{
+#'  \item{\code{new()}}{Create a new instance of a \code{Tokenizer}}
+#'  \item{\code{nextToken()}}{Obtain the next token, that is the character vector from the character after the last delimiter up to the next delimiter from the current list of delimiters. It will return \code{NA} on all invocations once the EOF is reached.}
+#'  \item{\code{setDelimiters()}}{Set the list of delimiters. It is given as an integer vector of (extended) ASCII-character values, i.e. in the range [0..255].}
+#'  \item{\code{getDelimiters()}}{Get the current list of delimiters.}
+#'  \item{\code{close()}}{Close the file behind the tokenizer. Future calls to \code{\link{nextToken}} will return \code{NA}. It is considered good style to close the file manually to avoid to many open handles. The file will be closed automatically when there are no more references to the \code{Tokenizer} and it is garbage collected or upon exiting the R session.}
+#'  \item{\code{print()}}{Prints the name of the currently opened file.}
+#' }
 #'
-#' internally: if defaulut delimiter, use optimised comparison function
+#' @usage 
+#' # tok <- Tokenizer$new(filename=NA, skipEmptyTokens=TRUE)
+#' # Tokenizer$getDelimiters()
+#' # Tokenizer$setDelimiters(delims)
+#' # Tokenizer$nextToken()
+#' # Tokenizer$close()
 #'
-#' Remember to alaways close a Tokenizer after use!
-#'
-#' Note that the sequence crlf (TODO: escape backslash) consists of two characters and therefore will give an empty token, when both are used as delimiters. 
-#'
-#' @param file The file to open.
-#' @param tokens A character vector of ASCII-Characters that serve as delimiters. If not set, it defaults to blank, tab, carriage return and linefeed (the last two together resemble a Windows newline).
-#' @return A Tokenizer containing information on \code{file}.
+#' @param filename The file to open.
+#' @param skipEmptyTokens set whether epty tokens ("") shall be skipped or returned
+#' @param delims An integer vector holding the ASCII-codes of characters that serve as delimiters. If not set, it defaults to blank, tab, carriage return and linefeed (the last two together resemble a Windows newline).
+#' @return A new Tokenizer object, backed by a memory mapped file and the delimiters set to the default values.
+#' 
+#' 
+#' 
 #' @examples
-#' Tokenizer("token.txt")
+#' tok<-Tokenizer$new("tests/testthat/token.txt")
+#' tok$nextToken()                                    # "Hi,"
+#' tok$print()                                        # or just 'tok'
+#' tok$getDelimiters()
+#' tok$setDelimiters(c(59L,0xaL))                     # new Delimiters: ';', newline
+#' tok$setDelimiters(as.integer(charToRaw(";\n")))    # the same
+#' tok$nextToken()
+#' tok$setDelimiters(Tokenizer$new()$getDelimiters()) # reset to default
+#' # while(!is.na(s<-tok$nextToken())) print(s)       # print the file
+#' tok$close()                                        # good style, but not required
 #' 
-##' @rdname Tokenizer
-##' @export
+#' @section Final Remarks:
+#' 
+#' While it may be tempting to clone a tokenizer object to split a file into different tokens from a given start position, this is not supported, as file state cannot be synchronized between the clones, leading to unpredictable results, when one of the clones closes the underlying shared file.
+#' 
+#' For efficiency reasons, \code{Tokenizer} will not re-stat the file once it is successfully opened. This means that especially a change of the file size can lead to unpredictable behaviour.
+#' 
+#' The sequence \code{\\cr\\lf} will be interpreted as two distinct tokens, if \code{skipEmptyTokens=FALSE}. The defualt setting is \code{TRUE}
+#' @rdname Tokenizer
+#' @format An \code{\link{R6Class}} generator object. 
+#' @export
 
 Tokenizer <- R6::R6Class("Tokenizer",
                   public = list(
@@ -89,26 +131,3 @@ Tokenizer <- R6::R6Class("Tokenizer",
                   ) # end private members
                   
 )
-
-#' mmap, open a file // most of this code is taken from Kevin Ushey's Kmisc package (version 0.5.0)
-#' returns a vector of (fd,map-address) on *nix and (hFile,hMap,map) on windows
-
-#sourceCpp(code='
-#ifdef WIN32         // means WIN64, too
-  #undef Realloc
-  #undef Free
-  #include <windows.h>
-  #include <stdio.h>
-  #include <tchar.h>
-#else
-  #include <sys/mman.h>
-  #include <sys/stat.h>
-  #include <fcntl.h>   // for open()
-  #include <unistd.h>  // for close()
-#endif
-
-#using namespace Rcpp;
-#using namespace std;          
-
-
-#}'  

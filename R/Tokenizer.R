@@ -4,7 +4,7 @@
 #' 
 #' supported functions:
 #' 
-#' next, setDelimiters , getDelimiters, close
+#' nextToken, setDelimiters , getDelimiters, close
 #'
 #' internally: if defaulut delimiter, use optimised comparison function
 #'
@@ -46,13 +46,13 @@ Tokenizer <- R6::R6Class("Tokenizer",
                       private$delims <- c(9,10,13,32) # tab, lf, cr, blank
 					  reg.finalizer(self,function(e) self$close,onexit = TRUE)
                     }, # end initialize
-                    set_delimiters = function(delims) {
+                    setDelimiters = function(delims) {
                       if (all(delims<256))
                         private$delims <- delims
                       else
                         stop("Only ASCII-characters (numerical value < 256) accepted.")
                     },
-                    get_delimiters = function() {
+                    getDelimiters = function() {
                       return(private$delims)
                     },
                     

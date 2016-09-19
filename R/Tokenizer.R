@@ -44,6 +44,7 @@ Tokenizer <- R6::R6Class("Tokenizer",
                         }
                       }
                       private$delims <- c(9,10,13,32) # tab, lf, cr, blank
+					  reg.finalizer(self,function(e) self$close,onexit = TRUE)
                     }, # end initialize
                     set_delimiters = function(delims) {
                       if (all(delims<256))

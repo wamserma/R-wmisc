@@ -206,8 +206,12 @@ bool CWmisc_validPtr(IntegerVector map, IntegerVector target, int offset){
   uint64_t start = (uint64_t)packPtr(map[0],map[1]);
   uint64_t ptr = (uint64_t)packPtr(target[0],target[1]);
   uint64_t end;
-  
+
+#if __GNUC__ > 4  
   if (__builtin_uaddll_overflow(start,offset,&end)) stop("Overflow in adress computation."); // error on overflow; we expect GCC > 5
+#else
+  end = start + offset;
+#endif
   if (ptr > end) return false;
   return true;
 }

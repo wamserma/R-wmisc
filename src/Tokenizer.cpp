@@ -11,6 +11,7 @@
 #include <unistd.h>  // for close()
 #endif
 
+#undef ERROR
 #include <Rcpp.h>
 #include <stdint.h>
 #include <string.h>

@@ -23,7 +23,7 @@
 
 Tokenizer <- R6::R6Class("Tokenizer",
                   public = list(
-                     initialize = function(filename = NA) {
+                     initialize = function(filename = NA, skipEmptyTokens = TRUE) {
                       if (is.na(filename)) {
                         warning("No file given. Tokenizer will always return NA.", immediate. = T)
                         private$nofile <- TRUE
@@ -37,6 +37,7 @@ Tokenizer <- R6::R6Class("Tokenizer",
                       } 
                       if (! private$nofile) { 
                         private$fname <- filename
+                        private$skipEmpty <- skipEmptyTokens
                         private$fd = CWmisc_mmap(filename)
                         if (is.null(private$fd[1][[1]])) private$nofile <- TRUE
                         else{
@@ -61,6 +62,10 @@ Tokenizer <- R6::R6Class("Tokenizer",
                       if (!CWmisc_validPtr(private$fd$map,private$currentPtr,private$fd$sz)) return(NA)
                       ret<-CWmisc_nextToken(private$currentPtr,private$delims)
                       private$currentPtr<-ret$ptr
+                      while ((ret == "") && private$skipEmpty) {
+                        ret<-CWmisc_nextToken(private$currentPtr,private$delims)
+                        private$currentPtr<-ret$ptr
+                      }
                       return(ret$token)
                     },
                     close = function() {
@@ -75,11 +80,12 @@ Tokenizer <- R6::R6Class("Tokenizer",
                     }
                   ), # end public members
                   private = list(
-                    fname = NA,      # file name
-                    fd = NA,         # file descriptor of opened file
-                    currentPtr = NA, # start of next token
-                    nofile = FALSE,  # no file given or file closed
-                    delims = NA      # delimiters, NA is default
+                    fname = NA,         # file name
+                    fd = NA,            # file descriptor of opened file
+                    currentPtr = NA,    # start of next token
+                    nofile = FALSE,     # no file given or file closed
+                    delims = NA,        # delimiters, NA is default
+                    skipEmpty = TRUE    # skip empty tokens?
                   ) # end private members
                   
 )

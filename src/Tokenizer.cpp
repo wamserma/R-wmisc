@@ -92,7 +92,7 @@ List CWmisc_mmap(std::string path) {
   
   List output = List::create(Rcpp::Named("fd") = fd,
                              Rcpp::Named("sz") = sz,
-                             Rcpp::Named("map") = IntegerVector::create(map_h,map_l);
+                             Rcpp::Named("map") = IntegerVector::create(map_h,map_l));
   
   return output;
   

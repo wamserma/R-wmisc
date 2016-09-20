@@ -60,7 +60,7 @@ test_that("EOF is detected",{
   tok$close()
 })
 
-test_that("emptiy tokens are skipped",{
+test_that("empty tokens are skipped",{
   tok<-Tokenizer$new("token.txt")
   for (i in 1:7) token <- tok$nextToken()
   expect_equal(token,"tokeniser.")

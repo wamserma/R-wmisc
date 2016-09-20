@@ -13,6 +13,7 @@
 #' Both calls will give the same result. 
 #' 
 #' @docType class
+#' @importFrom R6 R6Class
 #' 
 #' @section Methods:
 #' 
@@ -21,7 +22,7 @@
 #'  \item{\code{nextToken()}}{Obtain the next token, that is the character vector from the character after the last delimiter up to the next delimiter from the current list of delimiters. It will return \code{NA} on all invocations once the EOF is reached.}
 #'  \item{\code{setDelimiters()}}{Set the list of delimiters. It is given as an integer vector of (extended) ASCII-character values, i.e. in the range [0..255].}
 #'  \item{\code{getDelimiters()}}{Get the current list of delimiters.}
-#'  \item{\code{close()}}{Close the file behind the tokenizer. Future calls to \code{\link{nextToken}} will return \code{NA}. It is considered good style to close the file manually to avoid to many open handles. The file will be closed automatically when there are no more references to the \code{Tokenizer} and it is garbage collected or upon exiting the R session.}
+#'  \item{\code{close()}}{Close the file behind the tokenizer. Future calls to \code{nextToken()} will return \code{NA}. It is considered good style to close the file manually to avoid to many open handles. The file will be closed automatically when there are no more references to the \code{Tokenizer} and it is garbage collected or upon exiting the R session.}
 #'  \item{\code{print()}}{Prints the name of the currently opened file.}
 #' }
 #'
@@ -40,6 +41,7 @@
 #' 
 #' 
 #' @examples
+#' \dontrun{
 #' tok<-Tokenizer$new("tests/testthat/token.txt")
 #' tok$nextToken()                                    # "Hi,"
 #' tok$print()                                        # or just 'tok'
@@ -50,7 +52,7 @@
 #' tok$setDelimiters(Tokenizer$new()$getDelimiters()) # reset to default
 #' # while(!is.na(s<-tok$nextToken())) print(s)       # print the file
 #' tok$close()                                        # good style, but not required
-#' 
+#' }
 #' @section Final Remarks:
 #' 
 #' While it may be tempting to clone a tokenizer object to split a file into different tokens from a given start position, this is not supported, as file state cannot be synchronized between the clones, leading to unpredictable results, when one of the clones closes the underlying shared file.

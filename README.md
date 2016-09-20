@@ -21,5 +21,7 @@ install the build dependencies
 install.packages(c("devtools", "roxygen2", "testthat", "knitr"))
 ```
 
-open project in RStudio and hit `Ctrl + Shift + L`
+open project in RStudio and hit `Ctrl + Shift + D`, `Ctrl + Shift + B` 
+
+It is suggested to use a GCC 5 or newer release to enable overflow checks in C, but the package will also build with the GCC 4.6 used in RTools 3.3.
 

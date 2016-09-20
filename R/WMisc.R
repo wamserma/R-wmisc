@@ -6,17 +6,15 @@
 #'
 #' This package contains a set of helper functions and tools that I couldn't find elsewhere or where I needed some slightly different behaviour.
 #'
-#' @section File access
+#' @section File access:
 #'
+#' Currently only one tool for file access is implemented: The \link{Tokenizer} to read string tokens from a (text) file.
 #'
 #' @docType package
 #' @name Wmisc
 NULL
 #>NULL
 
-
-# TODO: set coverage tool (codecov or coverall), see devtools::use_coverage
-# TODO: check licence for compatibiliyt with Kmisc
 
 #'@importFrom Rcpp evalCpp
 #'@useDynLib Wmisc

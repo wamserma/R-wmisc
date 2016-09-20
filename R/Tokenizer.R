@@ -13,7 +13,6 @@
 #' Both calls will give the same result. 
 #' 
 #' @docType class
-#' @importFrom R6 R6Class
 #' 
 #' @section Methods:
 #' 

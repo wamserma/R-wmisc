@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/wamserma/R-wmisc.png)](https://travis-ci.org/wamserma/R-wmisc)
+[![Build Status](https://travis-ci.org/wamserma/R-wmisc.png)](https://travis-ci.org/wamserma/R-wmisc) [![Build Status](https://travis-ci.org/wamserma/R-wmisc.png)](https://travis-ci.org/wamserma/R-wmisc) [![codecov](https://codecov.io/gh/wamserma/R-wmisc/branch/master/graph/badge.svg)](https://codecov.io/gh/wamserma/R-wmisc)
+
 
 # WMisc - because everyone should have his own misc package for R
 

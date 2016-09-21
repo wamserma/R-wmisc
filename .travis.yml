@@ -17,6 +17,9 @@ latex: false
 # we don't have any (important) reverse dependencies
 r_check_revdep: false
 
+r_packages:
+  - roxygen2
+
 before_script:
   - Rscript -e "Rcpp::compileAttributes()"
   - Rscript -e "devtools::document()" 

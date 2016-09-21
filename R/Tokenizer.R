@@ -42,15 +42,15 @@
 #' 
 #' @examples
 #' \dontrun{
-#' tok<-Tokenizer$new("tests/testthat/token.txt")
-#' tok$nextToken()                                    # "Hi,"
+#' tok<-Tokenizer$new("tokenfile.txt")
+#' tok$nextToken()                                    # 
 #' tok$print()                                        # or just 'tok'
 #' tok$getDelimiters()
 #' tok$setDelimiters(c(59L,0xaL))                     # new Delimiters: ';', newline
 #' tok$setDelimiters(as.integer(charToRaw(";\n")))    # the same
 #' tok$nextToken()
 #' tok$setDelimiters(Tokenizer$new()$getDelimiters()) # reset to default
-#' # while(!is.na(s<-tok$nextToken())) print(s)       # print the file
+#' # while(!is.na(s<-tok$nextToken())) print(s)       # print the remaing tokens of file
 #' tok$close()                                        # good style, but not required
 #' }
 #' @section Final Remarks:

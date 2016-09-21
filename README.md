@@ -7,6 +7,14 @@
 
 This is a collection of helper functions I wrote for myself. 
 
+## I want it!
+
+```r
+install.packages(c("devtools")) # if you haven't done that before
+devtools::install_github("wamserma/R-wmisc")
+```
+
+On Windows you will also need to install [RTools](https://cran.r-project.org/bin/windows/Rtools/)
 
 ## Building the Package manually
 

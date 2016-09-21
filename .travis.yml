@@ -19,7 +19,11 @@ r_check_revdep: false
 
 r_packages:
   - roxygen2
-
+  - covr
+  
 before_script:
-  - Rscript -e "Rcpp::compileAttributes()"
-  - Rscript -e "devtools::document()" 
+  - Rscript -e 'Rcpp::compileAttributes()'
+  - Rscript -e 'devtools::document()' 
+
+after_success:
+  - Rscript -e 'library(covr);codecov()' 

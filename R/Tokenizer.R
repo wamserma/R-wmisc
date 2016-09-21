@@ -74,7 +74,7 @@ Tokenizer <- R6::R6Class("Tokenizer",
                       if (! private$nofile) {
                         filename <- normalizePath( as.character(filename) )
                         if (!file.exists(filename)) {
-                          warning("No file at file location '", file, "'. Tokenizer will always return NA.")
+                          warning("No file at file location '", filename, "'. Tokenizer will always return NA.")
                           private$nofile <- TRUE
                         }
                       } 

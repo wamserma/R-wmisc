@@ -5,11 +5,10 @@ test_that("call without filename gives warning and object as with closed file",{
           expect_output(tok$print(),"No file open. Please create a new object for reading.")
           })
 
-#this fails as normalizPath seems to return a closure in that case
-#test_that("call with inexistent file gives warning and object as with closed file",{
-#  expect_warning(tok<-Tokenizer$new("imnothere.invalid"))
-  #expect_output(tok$print(),"No file open. Please create a new object for reading.")
-#})
+test_that("call with inexistent file gives warning and object as with closed file",{
+  expect_warning(tok<-Tokenizer$new("nofile.txt"))
+  expect_output(tok$print(),"No file open. Please create a new object for reading.")
+})
 
 test_that("opening and closing a file works",{
   tok<-Tokenizer$new("token.txt")

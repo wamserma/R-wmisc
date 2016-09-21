@@ -39,8 +39,13 @@ test_that("modifying delimiters works",{
 test_that("Only ASCII-characters (numerical value < 256) accepted.",{
   expect_warning(tok<-Tokenizer$new())
   expect_error(tok$setDelimiters(c(3,4,5,12345)),"Only ASCII.*")
+  expect_identical(tok$getDelimiters(),as.integer(c(9,10,13,32)))
+  expect_error(tok$setDelimiters(as.integer(c(3,4,5,12345))),"Only ASCII.*")
+  expect_identical(tok$getDelimiters(),as.integer(c(9,10,13,32)))
   expect_error(tok$setDelimiters(c(3,4,-5,8)),"Only ASCII.*")
+  expect_identical(tok$getDelimiters(),as.integer(c(9,10,13,32)))
   expect_error(tok$setDelimiters(c(3,4,7.2,8)),"Only ASCII.*")
+  expect_identical(tok$getDelimiters(),as.integer(c(9,10,13,32)))
 })
 
 test_that("reading tokens works as expected",{
@@ -56,10 +61,11 @@ test_that("EOF is detected",{
   tok<-Tokenizer$new("token.txt",FALSE)
   i<-0
   token <- tok$nextToken()
-  while ((token != "newline.") && (i < 100)){
+  while ((token != "without") && (i < 100)){
     token <- tok$nextToken()
     i<-i+1
   }
+  expect_equal(tok$nextToken(),"newline.")
   expect_equal(tok$nextToken(),NA)
   expect_lte(i,41)
   tok$close()
@@ -71,6 +77,9 @@ test_that("empty tokens are skipped",{
   expect_equal(tok$nextToken(),"H")
   expect_equal(tok$nextToken()," use me to")
   tok$close()
+})
+
+test_that("empty tokens are not skipped on request",{
   tok<-Tokenizer$new("token.txt",FALSE)
   tok$setDelimiters(c(0x69L,0x2cL,0x9L))
   expect_equal(tok$nextToken(),"H")

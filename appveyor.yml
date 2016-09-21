@@ -34,6 +34,10 @@ environment:
 
   - R_VERSION: patched
 
+before_build:
+  - travis-tool.sh install roxygen2 covr
+  - Rscript -e 'Rcpp::compileAttributes()'
+  - Rscript -e 'devtools::document()' 
 
 build_script:
   - travis-tool.sh install_deps

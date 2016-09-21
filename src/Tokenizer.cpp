@@ -186,10 +186,11 @@ void CWmisc_munmap(List fdVec) {
 List CWmisc_nextToken(IntegerVector currentPtr, IntegerVector delims){
   
   char* start = (char*)packPtr(currentPtr[0],currentPtr[1]);
-  char d[delims.size()];
+  char d[delims.size()+1];
 
   // copy the delimiters from the IntegerVector to a char array usable by strcspn
   for (int i=0;i<delims.size();i++) d[i] = (char)delims[i];
+  d[delims.size()] = 0; // strcspn expects \NULL-terminated strings
   
   size_t length = strcspn(start, d);
   

@@ -36,8 +36,8 @@ environment:
 
 before_build:
   - travis-tool.sh install_r roxygen2 devtools
-  - Rscript -e 'Rcpp::compileAttributes()'
-  - Rscript -e 'devtools::document()' 
+  - Rscript -e "Rcpp::compileAttributes()"
+  - Rscript -e "devtools::document()" 
 
 build_script:
   - travis-tool.sh install_deps
@@ -50,7 +50,7 @@ on_failure:
 #  - appveyor PushArtifact failure.zip
 
 on_success:  
-  - Rscript -e 'library(covr);codecov()'
+  - Rscript -e "library(covr);codecov()"
   
 artifacts:
   - path: '*.Rcheck\**\*.log'

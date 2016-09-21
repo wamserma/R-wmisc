@@ -5,3 +5,5 @@
 ^\.travis.yml$
 ^README\.md$
 ^R/installBuilddeps\.R$
+^codecov\.yml$
+^appveyor\.yml$

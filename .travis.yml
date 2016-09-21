@@ -17,3 +17,4 @@ latex: false
 # we don't have any (important) reverse dependencies
 r_check_revdep: false
 
+before_script: Rscript -e "Rcpp::compileAttributes()"

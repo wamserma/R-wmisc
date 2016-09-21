@@ -34,14 +34,15 @@ environment:
 
   - R_VERSION: patched
 
+  # install all packages from DESCRIPTION here as 
 before_build:
-  - travis-tool.sh install_r roxygen2 devtools
+  - travis-tool.sh install_deps
   - Rscript -e "Rcpp::compileAttributes()"
   - Rscript -e "devtools::document()" 
 
 build_script:
-  - travis-tool.sh install_deps
-
+  - echo "actual build happens in test_script as R CMD check includes tests"
+  
 test_script:
   - travis-tool.sh run_tests
 

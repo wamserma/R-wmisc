@@ -54,20 +54,28 @@ test_that("reading tokens works as expected",{
 
 test_that("EOF is detected",{
   tok<-Tokenizer$new("token.txt",FALSE)
-  for (i in 1:41) token <- tok$nextToken()
-  expect_equal(token,"newline.")
+  i<-0
+  token <- tok$nextToken()
+  while ((token != "newline.") && (i < 100)){
+    token <- tok$nextToken()
+    i<-i+1
+  }
   expect_equal(tok$nextToken(),NA)
+  expect_lte(i,41)
   tok$close()
 })
 
-test_that("emptiy tokens are skipped",{
+test_that("empty tokens are skipped",{
   tok<-Tokenizer$new("token.txt")
-  for (i in 1:7) token <- tok$nextToken()
-  expect_equal(token,"tokeniser.")
+  tok$setDelimiters(c(0x69L,0x2cL,0x9L))
+  expect_equal(tok$nextToken(),"H")
+  expect_equal(tok$nextToken()," use me to")
   tok$close()
   tok<-Tokenizer$new("token.txt",FALSE)
-  for (i in 1:7) token <- tok$nextToken()
-  expect_equal(token,"")
+  tok$setDelimiters(c(0x69L,0x2cL,0x9L))
+  expect_equal(tok$nextToken(),"H")
+  expect_equal(tok$nextToken(),"")
+  expect_equal(tok$nextToken()," use me to")
   tok$close()
 })
 

@@ -40,12 +40,12 @@ Both calls will give the same result.
 
 
 \describe{
- \item{\code{new()}}{Create a new instance of a \code{Tokenizer}}
- \item{\code{nextToken()}}{Obtain the next token, that is the character vector from the character after the last delimiter up to the next delimiter from the current list of delimiters. It will return \code{NA} on all invocations once the EOF is reached.}
- \item{\code{setDelimiters()}}{Set the list of delimiters. It is given as an integer vector of (extended) ASCII-character values, i.e. in the range [0..255].}
- \item{\code{getDelimiters()}}{Get the current list of delimiters.}
- \item{\code{close()}}{Close the file behind the tokenizer. Future calls to \code{nextToken()} will return \code{NA}. It is considered good style to close the file manually to avoid to many open handles. The file will be closed automatically when there are no more references to the \code{Tokenizer} and it is garbage collected or upon exiting the R session.}
- \item{\code{print()}}{Prints the name of the currently opened file.}
+  \item{\code{new()}}{Create a new instance of a \code{Tokenizer}}
+  \item{\code{nextToken()}}{Obtain the next token, that is the character vector from the character after the last delimiter up to the next delimiter from the current list of delimiters. It will return \code{NA} on all invocations once the EOF is reached.}
+  \item{\code{setDelimiters()}}{Set the list of delimiters. It is given as an integer vector of (extended) ASCII-character values, i.e. in the range [0..255].}
+  \item{\code{getDelimiters()}}{Get the current list of delimiters.}
+  \item{\code{close()}}{Close the file behind the tokenizer. Future calls to \code{nextToken()} will return \code{NA}. It is considered good style to close the file manually to avoid to many open handles. The file will be closed automatically when there are no more references to the \code{Tokenizer} and it is garbage collected or upon exiting the R session.}
+  \item{\code{print()}}{Prints the name of the currently opened file.}
 }
 }
 

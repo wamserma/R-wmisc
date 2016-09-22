@@ -63,12 +63,13 @@ List CWmisc_mmap(std::string path) {
   
   int fd = open( path.c_str(), O_RDONLY );
   if (fstat(fd, &file_info) == -1) {
-    warning("Could not read file information."); 
+    warning("File not found."); 
     List output = List::get_na();                
     return output;                               
   }
   int sz = file_info.st_size;
   if (sz <= 0) {
+    warning("File is empty."); 
     List output = List::get_na();                
     return output;                               
   }

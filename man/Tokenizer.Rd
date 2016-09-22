@@ -15,7 +15,7 @@
 \arguments{
 \item{filename}{The file to open.}
 
-\item{skipEmptyTokens}{set whether epty tokens ("") shall be skipped or returned}
+\item{skipEmptyTokens}{set whether empty tokens ("") shall be skipped or returned}
 
 \item{delims}{An integer vector holding the ASCII-codes of characters that serve as delimiters. If not set, it defaults to blank, tab, carriage return and linefeed (the last two together resemble a Windows newline).}
 }
@@ -68,7 +68,7 @@ tok$setDelimiters(c(59L,0xaL))                     # new Delimiters: ';', newlin
 tok$setDelimiters(as.integer(charToRaw(";\\n")))    # the same
 tok$nextToken()
 tok$setDelimiters(Tokenizer$new()$getDelimiters()) # reset to default
-# while(!is.na(s<-tok$nextToken())) print(s)       # print the remaing tokens of file
+while(!is.na(s<-tok$nextToken())) print(s)       # print the remaing tokens of file
 tok$close()                                        # good style, but not required
 }
 }

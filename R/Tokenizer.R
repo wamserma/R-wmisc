@@ -34,7 +34,7 @@
 #' # Tokenizer$close()
 #'
 #' @param filename The file to open.
-#' @param skipEmptyTokens set whether epty tokens ("") shall be skipped or returned
+#' @param skipEmptyTokens set whether empty tokens ("") shall be skipped or returned
 #' @param delims An integer vector holding the ASCII-codes of characters that serve as delimiters. If not set, it defaults to blank, tab, carriage return and linefeed (the last two together resemble a Windows newline).
 #' @return A new Tokenizer object, backed by a memory mapped file and the delimiters set to the default values.
 #' 
@@ -50,7 +50,7 @@
 #' tok$setDelimiters(as.integer(charToRaw(";\n")))    # the same
 #' tok$nextToken()
 #' tok$setDelimiters(Tokenizer$new()$getDelimiters()) # reset to default
-#' # while(!is.na(s<-tok$nextToken())) print(s)       # print the remaing tokens of file
+#' while(!is.na(s<-tok$nextToken())) print(s)       # print the remaing tokens of file
 #' tok$close()                                        # good style, but not required
 #' }
 #' @section Final Remarks:
@@ -78,7 +78,7 @@ Tokenizer <- R6::R6Class("Tokenizer",
                           private$nofile <- TRUE
                         }
                       } 
-                      if (! private$nofile) { 
+                      if (! private$nofile) {
                         private$fname <- filename
                         private$skipEmpty <- skipEmptyTokens
                         private$fd <- CWmisc_mmap(filename)

@@ -4,6 +4,3 @@ R-wmisc.Rproj
 .Rproj.user/*
 .Rproj.user
 inst/doc
-man/*
-R/RcppExports.R
-src/RcppExports.cpp

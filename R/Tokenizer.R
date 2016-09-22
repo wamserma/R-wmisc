@@ -81,7 +81,7 @@ Tokenizer <- R6::R6Class("Tokenizer",
                       if (! private$nofile) { 
                         private$fname <- filename
                         private$skipEmpty <- skipEmptyTokens
-                        private$fd = CWmisc_mmap(filename)
+                        private$fd <- CWmisc_mmap(filename)
                         if (is.null(private$fd[1][[1]])) private$nofile <- TRUE
                         else{
                           private$currentPtr <- private$fd$map

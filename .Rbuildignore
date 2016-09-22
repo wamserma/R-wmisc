@@ -7,3 +7,4 @@
 ^R/installBuilddeps\.R$
 ^codecov\.yml$
 ^appveyor\.yml$
+^.lintr$

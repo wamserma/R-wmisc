@@ -60,7 +60,7 @@ test_that("EOF is detected", {
   tok<-Tokenizer$new("token.txt", FALSE)
   i<-0
   token <- tok$nextToken()
-  while ((token != "without") && (i < 100)){
+  while ( (token != "without") && (i < 100)){
     token <- tok$nextToken()
     i<-i+1
   }

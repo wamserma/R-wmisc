@@ -18,21 +18,23 @@
 #' @section Methods:
 #' 
 #' \describe{
-#'  \item{\code{new()}}{Create a new instance of a \code{Tokenizer}}
-#'  \item{\code{nextToken()}}{Obtain the next token, that is the character vector from the character after the last delimiter up to the next delimiter from the current list of delimiters. It will return \code{NA} on all invocations once the EOF is reached.}
-#'  \item{\code{setDelimiters()}}{Set the list of delimiters. It is given as an integer vector of (extended) ASCII-character values, i.e. in the range [0..255].}
-#'  \item{\code{getDelimiters()}}{Get the current list of delimiters.}
-#'  \item{\code{close()}}{Close the file behind the tokenizer. Future calls to \code{nextToken()} will return \code{NA}. It is considered good style to close the file manually to avoid to many open handles. The file will be closed automatically when there are no more references to the \code{Tokenizer} and it is garbage collected or upon exiting the R session.}
-#'  \item{\code{print()}}{Prints the name of the currently opened file.}
+#'   \item{\code{new()}}{Create a new instance of a \code{Tokenizer}}
+#'   \item{\code{nextToken()}}{Obtain the next token, that is the character vector from the character after the last delimiter up to the next delimiter from the current list of delimiters. It will return \code{NA} on all invocations once the EOF is reached.}
+#'   \item{\code{setDelimiters()}}{Set the list of delimiters. It is given as an integer vector of (extended) ASCII-character values, i.e. in the range [0..255].}
+#'   \item{\code{getDelimiters()}}{Get the current list of delimiters.}
+#'   \item{\code{close()}}{Close the file behind the tokenizer. Future calls to \code{nextToken()} will return \code{NA}. It is considered good style to close the file manually to avoid to many open handles. The file will be closed automatically when there are no more references to the \code{Tokenizer} and it is garbage collected or upon exiting the R session.}
+#'   \item{\code{print()}}{Prints the name of the currently opened file.}
 #' }
 #'
+# nolint start
 #' @usage 
 #' # tok <- Tokenizer$new(filename=NA, skipEmptyTokens=TRUE)
 #' # Tokenizer$getDelimiters()
 #' # Tokenizer$setDelimiters(delims)
 #' # Tokenizer$nextToken()
 #' # Tokenizer$close()
-#'
+# nolint end
+#' 
 #' @param filename The file to open.
 #' @param skipEmptyTokens set whether empty tokens ("") shall be skipped or returned
 #' @param delims An integer vector holding the ASCII-codes of characters that serve as delimiters. If not set, it defaults to blank, tab, carriage return and linefeed (the last two together resemble a Windows newline).
@@ -77,7 +79,7 @@ Tokenizer <- R6::R6Class("Tokenizer",
                           warning("No file at file location '", filename, "'. Tokenizer will always return NA.")
                           private$nofile <- TRUE
                         }
-                      } 
+                      }
                       if (! private$nofile) {
                         private$fname <- filename
                         private$skipEmpty <- skipEmptyTokens
@@ -88,7 +90,7 @@ Tokenizer <- R6::R6Class("Tokenizer",
                         }
                       }
                       private$delims <- as.integer(c(9,10,13,32)) # tab, lf, cr, blank
-					  reg.finalizer(self,function(e) self$close,onexit = TRUE)
+                      reg.finalizer(self,function(e) self$close,onexit = TRUE)
                     }, # end initialize
                     setDelimiters = function(delims) {
                       if (all(delims<256) & all(delims>=0) & all(is.integer(delims)))
@@ -99,13 +101,12 @@ Tokenizer <- R6::R6Class("Tokenizer",
                     getDelimiters = function() {
                       return(private$delims)
                     },
-                    
                     nextToken = function() {
                       if (private$nofile) return(NA)
                       if (!CWmisc_validPtr(private$fd$map,private$currentPtr,private$fd$sz)) return(NA)
                       ret<-CWmisc_nextToken(private$currentPtr,private$delims)
                       private$currentPtr<-ret$ptr
-                      while ((ret == "") && private$skipEmpty) {
+                      while ( (ret == "") && private$skipEmpty) {
                         ret<-CWmisc_nextToken(private$currentPtr,private$delims)
                         private$currentPtr<-ret$ptr
                       }
@@ -130,5 +131,4 @@ Tokenizer <- R6::R6Class("Tokenizer",
                     delims = NA,        # delimiters, NA is default
                     skipEmpty = TRUE    # skip empty tokens?
                   ) # end private members
-                  
 )

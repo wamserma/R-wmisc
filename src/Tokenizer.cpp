@@ -63,14 +63,14 @@ List CWmisc_mmap(std::string path) {
   
   int fd = open( path.c_str(), O_RDONLY );
   if (fstat(fd, &file_info) == -1) {
-    warning("Could not read file information."); // # nocov
-    List output = List::get_na();                // # nocov
-    return output;                               // # nocov
+    warning("Could not read file information."); 
+    List output = List::get_na();                
+    return output;                               
   }
   int sz = file_info.st_size;
   if (sz <= 0) {
-    List output = List::get_na();                // # nocov
-    return output;                               // # nocov
+    List output = List::get_na();                
+    return output;                               
   }
   #ifdef MAP_POPULATE
     map = (char*) mmap(0, sz, PROT_READ, MAP_SHARED | MAP_POPULATE, fd, 0);
@@ -105,30 +105,30 @@ List CWmisc_mmap(std::string path) {
   const char* fnam = path.c_str();
   hFile = CreateFile(fnam, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
   if (hFile==INVALID_HANDLE_VALUE) {
-    warning("File not found: %s",fnam);   // # nocov
-    List output = List::get_na();         // # nocov
-    return output;                        // # nocov
+    warning("File not found: ",fnam); 
+    List output = List::get_na();     
+    return output;                    
   }
   dwFileSize=GetFileSize(hFile,NULL);
   if (dwFileSize==0) { 
-    CloseHandle(hFile);                   // # nocov
-    warning("File is empty: %s", fnam);   // # nocov
-    List output = List::get_na();         // # nocov
-    return output;                        // # nocov
+    CloseHandle(hFile);               
+    warning("File is empty: ", fnam); 
+    List output = List::get_na();     
+    return output;                    
   }
   hMap=CreateFileMapping(hFile, NULL, PAGE_READONLY, 0, 0, NULL); // dwFileSize+1 not allowed here, unlike mmap where +1 is zeroed
   if (hMap==NULL) { 
-    CloseHandle(hFile);                  // # nocov start
-    warning("This is Windows, CreateFileMapping returned error %d for file %s", GetLastError(), fnam);
-    List output = List::get_na();
-    return output;                      // # nocov end
+    CloseHandle(hFile);                  // # nocov start because this case is hard to produce in a test
+    warning("This is Windows, CreateFileMapping returned error ", GetLastError(), " for file ", fnam);
+    List output = List::get_na();         
+    return output;                       // # nocov end
   }
   map = (char *)MapViewOfFile(hMap,FILE_MAP_READ,0,0,dwFileSize);
   if (map == NULL) {
-    CloseHandle(hMap);                        // # nocov
-    CloseHandle(hFile);                       // # nocov
-    warning("Mapping file %s failed.", fnam); // # nocov
-    List output = List::get_na();             // # nocov
+    CloseHandle(hMap);                          // # nocov start because this case is hard to produce in a test
+    CloseHandle(hFile);                         
+    warning("Mapping file ", fnam, " failed."); 
+    List output = List::get_na();               // # nocov end
     return output;
   }
   

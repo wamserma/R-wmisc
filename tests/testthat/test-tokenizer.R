@@ -100,3 +100,58 @@ test_that("empty tokens are not skipped on request", {
   expect_equal(tok$nextToken(), " use me to")
   tok$close()
 })
+
+## testing the reading functions
+test_that("readTokens() works", {
+  ref <-
+    c("Hi,", "use", "me", "to", "test", "the", "tokeniser.", "Maybe,use;comma,or;semicolon",
+      "or", "XZG", "or", "whatever", "you", "like.", "I", "use", "Windows",
+      "line", "endings", "(CR+LF)", "so", "you", "can", "test", "tokenising",
+      "on", "different", "combinations.", "xx", "yy", "zz", "EOF",
+      "without", "newline.")
+  s<-readTokens(Tokenizer$new("token.txt"))
+  expect_equal(s, ref)
+  t<-readTokens("token.txt")
+  expect_equal(t, ref)
+  tok<-Tokenizer$new("token.txt")
+  tok$nextToken()
+  u<-readTokens(tok)
+  expect_equal(u, ref[-1])
+})
+
+test_that("readTokens() takes custom delimiter", {
+  ref<-c("Hi", " use me to\ttest the\r\ntokeniser.\r\nMaybe", "use", "comma",
+        "or", "semicolon or XZG or whatever you like.\r\nI use Windows line endings (CR",
+        "LF) so you can test tokenising on different combinations.\r\nxx\r\nyy\r\nzz\r\nEOF without newline.")
+  s<-readTokens(Tokenizer$new("token.txt"),delims=as.integer(charToRaw(",;+")))
+  expect_equal(s, ref)
+  t<-readTokens("token.txt",delims=as.integer(charToRaw(",;+")))
+  expect_equal(t, ref)
+  ref[2]<-"use me to\ttest the\r\ntokeniser.\r\nMaybe"
+  tok<-Tokenizer$new("token.txt")
+  tok$nextToken()
+  u<-readTokens(tok,as.integer(charToRaw(",;+")))
+  expect_equal(u, ref[-1])
+})
+
+test_that("readTokens() handles invalid input gracefully", {
+  s<-readTokens()
+  expect_identical(s, as.character(c()))
+  t<-readTokens(3)
+  expect_identical(t, as.character(c()))
+  expect_warning(u<-readTokens("foo"))
+  expect_identical(u, as.character(c()))
+})
+
+test_that("readlines() works", {
+  s<-readlines()
+  expect_identical(s, as.character(c()))
+  ref<-c("Hi, use me to\ttest the", "tokeniser.",
+    "Maybe,use;comma,or;semicolon or XZG or whatever you like.",
+    "I use Windows line endings (CR+LF) so you can test tokenising on different combinations.",
+    "xx", "yy", "zz", "EOF without newline.")
+  t<-readlines("token.txt")
+  expect_identical(t, ref)
+  expect_warning(u<-readlines("foo"))
+  expect_identical(u, as.character(c()))
+})

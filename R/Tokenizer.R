@@ -133,3 +133,70 @@ Tokenizer <- R6::R6Class("Tokenizer",
                     skipEmpty = TRUE    # skip empty tokens?
                   ) # end private members
 )
+
+
+#' Read the remaining tokens from a \code{Tokenizer} up to the end of the underlying file.
+#'
+#' @description A comfortable way to read all remaining tokens from a file open through a tokenizer.. 
+#  nolint start  
+#' @usage 
+#' # readTokens(mytok)
+#' # readTokens(Tokenizer$new("myfile.txt"),c("0x20L"))
+#  nolint end 
+#' @param tok The tokenizer from which to read.
+#' @param delims The delimiters to use for the remaining tokens.
+#' 
+#' @return A vector of strings representing the read tokens.
+#' 
+#' 
+#' 
+#' @examples
+#' \dontrun{
+#' tok<-Tokenizer$new("myfile.txt")           # create a tokenizer
+#' tok$nextToken()                            # read some tokens
+#' readTokens(tok,as.integer(charToRaw("+"))) # read the rest of the file, now delimited by "+"
+#' readTokens(Tokenizer$new("myfile.txt"))    # read all tokens
+#' readTokens("myfile.txt")                   # same as above, syntactic sugar
+#' }
+#' @rdname readTokens
+#' @export
+
+readTokens <- function(tok=NA,delims=c()){
+  if (!any(class(tok)=="Tokenizer")) {
+    if (class(tok)=="character"){
+      tok<-Tokenizer$new(tok)
+    } else {
+      return(as.character(c()))
+    }
+  }
+  if (length(delims) > 0) tok$setDelimiters(delims)
+  token <- tok$nextToken()
+  strings <- list(prev=NA,d=token)
+  while (! is.na(token)){
+   token <- tok$nextToken()
+   strings <- list(prev=strings,d=token)
+  }
+  strings <- strings$prev # skip last NA
+  strings <- as.character(unlist(strings, use.names=FALSE)[-1]) # make Vector of strings and skip initial NA
+  tok$close()
+  return(strings)
+}
+#' Use a \code{Tokenizer} to read lines from a file. This mimics \code{Kmisc::readlines()}.
+#'
+#' @description A comfortable way to read all lines from a file. Syntactic sugar for \code{readTokens(Tokenizer$new(filename),delims=c(10L,13L))}. 
+#  nolint start  
+#' @usage 
+#' # readlines("myfile.txt")
+#  nolint end 
+#' @param filename The file to read.
+#' @return A vector of strings representing the lines of the file.
+#' 
+#' @examples
+#' \dontrun{
+#' readlines("myfile.txt")
+#' }
+#' @rdname readTokens
+#' @export
+readlines <- function(filename=NA){
+  readTokens(filename,delims=c(10L,13L))
+}

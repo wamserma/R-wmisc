@@ -107,6 +107,7 @@ Tokenizer <- R6::R6Class("Tokenizer",
                       ret<-CWmisc_nextToken(private$currentPtr,private$delims)
                       private$currentPtr<-ret$ptr
                       while ( (ret == "") && private$skipEmpty) {
+                        if (!CWmisc_validPtr(private$fd$map,private$currentPtr,private$fd$sz)) return(NA)
                         ret<-CWmisc_nextToken(private$currentPtr,private$delims)
                         private$currentPtr<-ret$ptr
                       }

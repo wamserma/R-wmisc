@@ -70,6 +70,20 @@ test_that("EOF is detected", {
   tok$close()
 })
 
+test_that("EOF is detected when the last token is silent", {
+  tok<-Tokenizer$new("token.txt")
+  i<-0
+  tok$setDelimiters(as.integer(charToRaw(".")))
+  token <- "foo"
+  while ( (!is.na(token)) && (i < 100)){
+    token <- tok$nextToken()
+    i<-i+1
+  }
+  expect_equal(i, 5)
+  tok$close()
+})
+
+
 test_that("empty tokens are skipped", {
   tok<-Tokenizer$new("token.txt")
   tok$setDelimiters(c(0x69L, 0x2cL, 0x9L))

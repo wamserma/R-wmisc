@@ -3,7 +3,7 @@
 \docType{class}
 \name{Tokenizer}
 \alias{Tokenizer}
-\title{Create a \code{Tokenizer} to read string tokens from a memory mapped file.}
+\title{Create a \code{Tokenizer} to read string tokens from a memory mapped file. A more flexible, incremental, easy-to-use variant of a \code{readlines()} function.}
 \format{An \code{\link{R6Class}} generator object.}
 \usage{
 # tok <- Tokenizer$new(filename=NA, skipEmptyTokens=TRUE)

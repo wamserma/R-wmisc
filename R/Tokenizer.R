@@ -1,4 +1,4 @@
-#' Create a \code{Tokenizer} to read string tokens from a memory mapped file.
+#' Create a \code{Tokenizer} to read string tokens from a memory mapped file. A more flexible, incremental, easy-to-use variant of a \code{readlines()} function.
 #'
 #' @description Reading and processing tokens from a text file usually is done in three steps: Load the file, cut into tokenst, act upon the resulting vector of strings.
 #' The \code{Tokenizer} aims to simplify and streamline the process, when tokens must be processed in a sequential manner.

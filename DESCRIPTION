@@ -1,8 +1,8 @@
 Package: Wmisc
 Type: Package
 Title: Markus Wamser's miscellaneous helper functions 
-Version: 0.1.0
-Date: 2016-09-20
+Version: 0.1.1
+Date: 2016-09-26
 Authors@R: person("Markus S.", "Wamser", email = "r-wmisc@devel.wamser.eu",
   role = c("aut", "cre"))
 Description: This package is a collection of helper functions that were primarily written for personal use, but might be useful for a wider audience.

@@ -1,11 +1,13 @@
 [![Build Status](https://img.shields.io/travis/wamserma/R-wmisc/master.png)](https://travis-ci.org/wamserma/R-wmisc/) [![Windows Build Status](https://img.shields.io/appveyor/ci/wamserma/R-wmisc/master.svg)](https://ci.appveyor.com/project/wamserma/R-wmisc) [![Coverage Status](https://img.shields.io/codecov/c/github/wamserma/R-wmisc/master.svg)](https://codecov.io/github/wamserma/R-wmisc?branch=master)
 
 
-# WMisc - because everyone should have his own misc package for R
+# Wmisc - because everyone should have his own misc package for R
 
 ## Huh?
 
 This is a collection of helper functions I wrote for myself. 
+
++ `Tokenizer`: A convenient method to read a file step-by-step with wrapper functions to read a file as a whole. For smaller files (a few dozen Megabytes) this is as fast as `base::readLines()` and `Kmisc::readlines()`. Quick benchmarks showed that for files of this size access times on mass storage (including caching by the OS) are magnitudes higher than actual read times. For big files the use case for `Tokenizer` is read-and-process/parse, reducing memory load compared to the other methods.
 
 ## I want it!
 
@@ -14,7 +16,7 @@ install.packages(c("devtools")) # if you haven't done that before
 devtools::install_github("wamserma/R-wmisc")
 ```
 
-On Windows you will also need to install [RTools](https://cran.r-project.org/bin/windows/Rtools/)
+On Windows you will also need to install [RTools](https://cran.r-project.org/bin/windows/Rtools/).
 
 ## Building the Package manually
 

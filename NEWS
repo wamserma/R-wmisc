@@ -1,4 +1,9 @@
-# Wmisc VErsion History
+# Wmisc Version History
+
+## Version 0.1.1
+
+- Bugfix: Various Bugfixes for Tokenizer
+- Refactoring: Removed some lints
 
 ## Version 0.1.0 
 

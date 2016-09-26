@@ -9,6 +9,7 @@ Description: This package is a collection of helper functions that were primaril
 LinkingTo:
     Rcpp
 Imports:
+    hash,
     Rcpp (>= 0.12.7),
     R6
 URL: https://github.com/wamserma/R-Wmisc/

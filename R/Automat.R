@@ -13,6 +13,7 @@
 #' \describe{
 #'   \item{\code{new()}}{Create a new instance of an \code{Automat}.}
 #'   \item{\code{addTransition(from,input,to,FUN)}}{Add a transition 'from' a named state upon 'input' 'to' named state. While any comparable type would do, these values are restricted to character types by the internal implementation. Use 'as.character()' if your states are simply numbered. The function FUN is called with the previous state, the current state and the input as argument. It is used for generating side effects or producing output values.}
+#'   \item{\code{setPredicate(from,PFUN)}} Used to set a predicate function \code{PFUN} for a given state. A predicate function is a function called on the input before it is processed. It must return a value of type character but can be used to extend the input domain to arbitrary objects and conveniently implement complex transitions (e.g. depending on prefixes).
 #'   \item{\code{setState(to)}}{Set the \code{Automat} to a certain state (e.g. to the initial state).}
 #'   \item{\code{read(input)}}{Tell the \code{Automat} to read/consume the given input and act upon it.}
 #'   \item{\code{print(long=F)}}{Prints a summary of the \code{Automat}. When long is true, a full list of states and transitions is returned.}
@@ -59,9 +60,11 @@ Automat <- R6::R6Class("Automat",
                        private$states <- hash()
                        private$byany <- hash()
                        private$fromany <- hash()
+                       private$predicates <- hash()
                        reg.finalizer(self,function(e) {
                          clear(private$byany)
                          clear(private$fromany)
+                         clear(private$predicates)
                          for (h in names(private$states)) {
                            clear(private$states[[h]])
                          }
@@ -101,6 +104,10 @@ Automat <- R6::R6Class("Automat",
                       }
                       private$states[[from]][[input]]<-list(t=to,f=FUN)
                     },
+                    setPredicate = function(from,FUN){
+                      if (!is.character(from)) stop("Not a valid state descriptor.")
+                      private$predicates[[from]]<-FUN
+                    },
                     setState = function(to){
                       if (!is.character(to)) stop("Not a valid state descriptor.")
                       private$current<-to
@@ -108,6 +115,10 @@ Automat <- R6::R6Class("Automat",
                     read = function(input) {
                       trans<-NULL
                       curr<-private$current
+                      if (is.na(curr)) stop("Not in a valid state. Use setState() to set a start state.")
+                      if (!is.null(p<-private$predicates[[curr]])) {
+                        input<-p(input)
+                      }
                       if (is.hash(s<-private$states[[curr]])){
                         trans<-s[[input]]
                       }
@@ -130,29 +141,77 @@ Automat <- R6::R6Class("Automat",
                       if (! is.null(trans$f) ){
                         ret<-trans$f(private$current,input,trans$t)
                       }
-                      private$current<-trans$t
                       if (!is.null(private$alwaysAction)){
-                        private$alwaysAction()
+                        private$alwaysAction(private$current,input,trans$t)
                       }
+                      private$current<-trans$t
+                      if (is.null(ret)) return(invisible(ret))
                       return(ret)
                     },
-                    print = function() {
-                        n <- max(0,private$states$size) + max(0,private$byany$size) # TODO may count states twice
-                        c <- private$current
-                        if (is.na(c)) c <- "not set"
-                        cat(paste0("An Automat with ",n," states.\n"))
-                        cat(paste0("Current state is: ",c))
+                    print = function(long=FALSE) {
+                      # produce the transition table to catch states which were declared only as target
+                      ttable <- c()
+                      for (s in keys(private$states)){
+                        t<-private$states[[s]]
+                        for (i in keys(t)) {
+                          ttable<-rbind(ttable,c(s,i,!is.null(t[[i]]$f),t[[i]]$t))
+                        }
+                      }
+                      t<-private$fromany
+                      for (i in keys(t)) {
+                        ttable<-rbind(ttable,c("*",i,!is.null(t[[i]]$f),t[[i]]$t))
+                      }
+                      t<-private$byany
+                      for (s in keys(t)) {
+                        ttable<-rbind(ttable,c(s,"*",!is.null(t[[s]]$f),t[[s]]$t))
+                      }
+                      if (!is.null(private$defaultAction)) {
+                        t<-private$defaultAction
+                        ttable<-rbind(ttable,c("*","*",!is.null(t$f),t$t))
+                      }
+                      if (length(ttable)>0) colnames(ttable)<-c("from","on input","function","to")
+                      n <- unique(c(ttable[,1],ttable[,4]))
+                      n <- n[n!="*"]
+                      c <- private$current
+                      if (is.na(c)) c <- "not set"
+                      cat(paste0("An Automat with ",length(n)," states.\n"))
+                      cat(paste0("Current state is: ",c))
+                      # print the detailed information
+                      if (long) {
+                          cat("\n\nStates:\n=======\n")
+                          cat(paste0(sort(n)))
+                          cat("\n\nTransitions:\n============\n")
+                          print(ttable)
+                          cat("\n(First match in list is used.)\n")
+                          if (!is.null(private$alwaysAction)){
+                            cat("There is a function that is invoked after each valid transition.")
+                          }
+                          preds<-sapply(n,function(x) !is.null(private$predicates[[x]]))
+                          if (any(preds)){
+                            cat("\n\nPredicates for states:\n======================\n")
+                            print(n[preds])
+                          }
+                        }
                     },
                     visualize = function() {
-                      # TODO: if package installed, visualize otherwise "sorry Dave I can't do that".
+                      if (requireNamespace("htmlwidgets", quietly = TRUE)) {
+                        htmlwidget::plot3d(...)
+                        g <- NULL
+                        # TODO: select graphing lib from htmlwidgets
+                        # TODO: create graph and return (do not display!)
+                        return(g)
+                      } else {
+                        warning("Sorry Dave, I can't do that.\nPlease install $PACKAGE")
+                      }
                     }
                   ), # end public members
                   private = list(
-                    current = NA,         # the current state
-                    states = NA,          # (from-)state-transition maps
-                    byany = NA,           # (from-)state-on-any-transitions
-                    fromany = NA,         # from-any-transitions by input
-                    defaultAction = NULL, # a default action if no transition pattern matches
+                    current = NA,           # the current state
+                    states = NA,            # (from-)state-transition maps
+                    byany = NA,             # (from-)state-on-any-transitions
+                    fromany = NA,           # from-any-transitions by input
+                    predicates = NA,        # state-dependent preprocesing of input
+                    defaultAction = NULL,   # a default action if no transition pattern matches
                     alwaysAction = NULL     # a function hook run after every step
                   ) # end private members
 )

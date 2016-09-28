@@ -1,6 +1,105 @@
+context("Automat")
+
 test_that("printing empty automat works",{
   A<-Automat$new()
   expect_output(A$print(),"An Automat with 0 states.\nCurrent state is: not set")
+})
+
+# create a basic automat for tests
+createBasicAutomat<-function(){
+  A<-Automat$new()
+  A$addTransition("ready","s","steady")
+  A$addTransition("steady","g","go")
+  A$addTransition("steady","a","ready",FUN=function(a,b,c){
+    print("aborted")
+  })
+  A$addTransition("go","r","ready")
+  A$setState("ready")
+  return(A)
+}
+
+test_that("printing and running a simple automat works",{
+  A<-createBasicAutomat()
+  expect_output(A$print(),"An Automat with 3 states.\nCurrent state is: ready")
+  expect_null(A$read("s"))
+  expect_output(A$print(),"An Automat with 3 states.\nCurrent state is: steady")
+  expect_null(A$read("g"))
+  expect_output(A$print(),"An Automat with 3 states.\nCurrent state is: go")
+  expect_null(A$read("r"))
+  expect_output(A$print(),"An Automat with 3 states.\nCurrent state is: ready")
+  expect_null(A$read("s"))
+  expect_output(A$print(),"An Automat with 3 states.\nCurrent state is: steady")
+  expect_output(A$read("a"),"aborted")
+  expect_output(A$print(),"An Automat with 3 states.\nCurrent state is: ready")
+  # below I use  . for '(',')' because of regexp matching
+  expect_error(A$read("g"),"No matching transition found for state .ready. and input .g.")
+  expect_output(A$print(),"An Automat with 3 states.\nCurrent state is: ready")
+  expect_null(A$read("s"))
+  expect_output(A$print(),"An Automat with 3 states.\nCurrent state is: steady")
+})
+
+test_that("always action works",{
+  A<-createBasicAutomat()
+  A$addTransition(NA,NA,NA,FUN=function(a,b,c){
+    print(paste0("automat went from (",a,") to (",c,") at input (",b,")"))
+    })
+  expect_output(A$read("s"),"automat went from .ready. to .steady. at input .s.")
+  expect_output(A$read("g"),"automat went from .steady. to .go. at input .g.")
+  expect_output(A$read("r"),"automat went from .go. to .ready. at input .r.")
+})
+
+test_that("default action works",{
+  A<-createBasicAutomat()
+  A$addTransition(NA,NA,"ready",FUN=function(a,b,c){
+    print(paste0("automat went from (",a,") to (",c,") at input (",b,")"))
+  })
+  expect_silent(A$read("s"))
+  expect_output(A$print(),"An Automat with 3 states.\nCurrent state is: steady")
+  expect_output(A$read("foo"),"automat went from .steady. to .ready. at input .foo.")
+  expect_silent(A$read("s"))
+  expect_output(A$print(),"An Automat with 3 states.\nCurrent state is: steady")
+  expect_silent(A$read("g"))
+  expect_output(A$print(),"An Automat with 3 states.\nCurrent state is: go")
+  expect_output(A$read("bar"),"automat went from .go. to .ready. at input .bar.")
+})
+
+test_that("from-any transitions works",{
+  A<-createBasicAutomat()
+  A$addTransition(NA,"reset","ready",FUN=function(a,b,c){
+    print(paste0("automat went from (",a,") to (",c,") at input (",b,")"))
+  })
+  expect_silent(A$read("s"))
+  expect_output(A$print(),"An Automat with 3 states.\nCurrent state is: steady")
+  expect_output(A$read("reset"),"automat went from .steady. to .ready. at input .reset.")
+  expect_silent(A$read("s"))
+  expect_output(A$print(),"An Automat with 3 states.\nCurrent state is: steady")
+  expect_silent(A$read("g"))
+  expect_output(A$print(),"An Automat with 3 states.\nCurrent state is: go")
+  expect_output(A$read("reset"),"automat went from .go. to .ready. at input .reset.")
+})
+
+
+test_that("inputs without from or to fail",{
+  A<-Automat$new()
+  expect_error(A$addTransition(NA,"foo",NA),"Invalid transition without target.")
+})
+
+test_that("long format printing works",{
+  A<-createBasicAutomat()
+  A$addTransition(NA,"reset","ready",FUN=function(a,b,c){
+    print(paste0("automat went from (",a,") to (",c,") at input (",b,")"))
+  })
+  A$addTransition(NA,"gnu","gnat")
+  A$addTransition(NA,NA,"gnu",FUN=function(a,b,c){
+    print(paste0("automat went from (",a,") to (",c,") at input (",b,")"))
+  })
+  expect_output_file(A$print(long=T),"automat-longprint-1.txt",update=F)
+  A$addTransition(NA,NA,NA,FUN=function(a,b,c){
+    print(paste0("automat went from (",a,") to (",c,") at input (",b,")"))
+  })
+  expect_output_file(A$print(long=T),"automat-longprint-2.txt",update=F)
+  A$setPredicate("gnat",function() "reset")
+  expect_output_file(A$print(long=T),"automat-longprint-3.txt",update=F)
 })
 
 test_that("Pokexample works",{
@@ -17,6 +116,7 @@ test_that("Pokexample works",{
   expect_equal(A$read("Bulbasaur"),"You caught Bulbasaur!")
 })
 
-# test printing #nolint
+
 # test long printing #nolint
 # test visualization #nolint
+# test predicates

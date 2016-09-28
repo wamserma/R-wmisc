@@ -13,7 +13,7 @@
 #' \describe{
 #'   \item{\code{new()}}{Create a new instance of an \code{Automat}.}
 #'   \item{\code{addTransition(from,input,to,FUN)}}{Add a transition 'from' a named state upon 'input' 'to' named state. While any comparable type would do, these values are restricted to character types by the internal implementation. Use 'as.character()' if your states are simply numbered. The function FUN is called with the previous state, the current state and the input as argument. It is used for generating side effects or producing output values.}
-#'   \item{\code{setPredicate(from,PFUN)}} Used to set a predicate function \code{PFUN} for a given state. A predicate function is a function called on the input before it is processed. It must return a value of type character but can be used to extend the input domain to arbitrary objects and conveniently implement complex transitions (e.g. depending on prefixes).
+#'   \item{\code{setPredicate(from,PFUN)}}{Used to set a predicate function \code{PFUN} for a given state. A predicate function is a function called on the input before it is processed. It must return a value of type character but can be used to extend the input domain to arbitrary objects and conveniently implement complex transitions (e.g. depending on prefixes).}
 #'   \item{\code{setState(to)}}{Set the \code{Automat} to a certain state (e.g. to the initial state).}
 #'   \item{\code{read(input)}}{Tell the \code{Automat} to read/consume the given input and act upon it.}
 #'   \item{\code{print(long=F)}}{Prints a summary of the \code{Automat}. When long is true, a full list of states and transitions is returned.}

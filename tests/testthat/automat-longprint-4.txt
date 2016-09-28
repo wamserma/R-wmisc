@@ -1,0 +1,25 @@
+An Automat with 5 states.
+Current state is: ready
+
+States:
+=======
+gnat gnu go ready steady
+
+Transitions:
+============
+     from     on input function to      
+[1,] "go"     "r"      "FALSE"  "ready" 
+[2,] "ready"  "s"      "FALSE"  "steady"
+[3,] "steady" "a"      "TRUE"   "ready" 
+[4,] "steady" "g"      "FALSE"  "go"    
+[5,] "*"      "gnu"    "FALSE"  "gnat"  
+[6,] "*"      "reset"  "TRUE"   "ready" 
+[7,] "gnat"   "*"      "TRUE"   "gnu"   
+[8,] "*"      "*"      "TRUE"   "gnu"   
+
+(First match in list is used.)
+There is a function that is invoked after each valid transition.
+
+Predicates for states:
+======================
+[1] "gnat"

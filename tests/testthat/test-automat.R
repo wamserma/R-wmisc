@@ -98,6 +98,11 @@ test_that("inputs without from or to fail",{
   expect_error(A$addTransition(NA,"foo",NA),"Invalid transition without target.")
 })
 
+test_that("inputs without input or to fail",{
+  A<-Automat$new()
+  expect_error(A$addTransition("foo",NA,NA),"Invalid transition without target.")
+})
+
 test_that("long format printing works",{
   A<-createBasicAutomat()
   A$addTransition(NA,"reset","ready",FUN=function(a,b,c){
@@ -114,6 +119,10 @@ test_that("long format printing works",{
   expect_output_file(A$print(long=T),"automat-longprint-2.txt",update=F)
   A$setPredicate("gnat",function() "reset")
   expect_output_file(A$print(long=T),"automat-longprint-3.txt",update=F)
+  A$addTransition("gnat",NA,"gnu",FUN=function(a,b,c){
+    paste0("automat went from (",a,") to (",c,") at input (",b,")") # this transition will never be matched
+  })
+  expect_output_file(A$print(long=T),"automat-longprint-4.txt",update=F)
 })
 
 test_that("Pokexample works",{

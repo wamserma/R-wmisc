@@ -17,7 +17,7 @@
 #'   \item{\code{setState(to)}}{Set the \code{Automat} to a certain state (e.g. to the initial state).}
 #'   \item{\code{read(input)}}{Tell the \code{Automat} to read/consume the given input and act upon it.}
 #'   \item{\code{print(long=F)}}{Prints a summary of the \code{Automat}. When long is true, a full list of states and transitions is returned.}
-#'   \item{\code{visualize()}}{Prints the state graph of the \code{Automat}.}
+#'   \item{\code{visualize()}}{Prints the state graph of the \code{Automat} using the \code{DiagrammeR} package.}
 #' }
 #'
 # nolint start
@@ -150,26 +150,7 @@ Automat <- R6::R6Class("Automat",
                     },
                     print = function(long=FALSE) {
                       # produce the transition table to catch states which were declared only as target
-                      ttable <- c()
-                      for (s in keys(private$states)){
-                        t<-private$states[[s]]
-                        for (i in keys(t)) {
-                          ttable<-rbind(ttable,c(s,i,!is.null(t[[i]]$f),t[[i]]$t))
-                        }
-                      }
-                      t<-private$fromany
-                      for (i in keys(t)) {
-                        ttable<-rbind(ttable,c("*",i,!is.null(t[[i]]$f),t[[i]]$t))
-                      }
-                      t<-private$byany
-                      for (s in keys(t)) {
-                        ttable<-rbind(ttable,c(s,"*",!is.null(t[[s]]$f),t[[s]]$t))
-                      }
-                      if (!is.null(private$defaultAction)) {
-                        t<-private$defaultAction
-                        ttable<-rbind(ttable,c("*","*",!is.null(t$f),t$t))
-                      }
-                      if (length(ttable)>0) colnames(ttable)<-c("from","on input","function","to")
+                      ttable<-private$ttable()
                       n <- unique(c(ttable[,1],ttable[,4]))
                       n <- n[n!="*"]
                       c <- private$current
@@ -194,14 +175,96 @@ Automat <- R6::R6Class("Automat",
                         }
                     },
                     visualize = function() {
-                      if (requireNamespace("htmlwidgets", quietly = TRUE)) {
-                        htmlwidget::plot3d(...)
-                        g <- NULL
-                        # TODO: select graphing lib from htmlwidgets
-                        # TODO: create graph and return (do not display!)
-                        return(g)
+                      if (requireNamespace("DiagrammeR", quietly = TRUE)) {
+                        ttable<-private$ttable()
+                        n <- unique(c(ttable[,1],ttable[,4]))
+                        n <- n[n!="*"]
+                        # get the nodes_df
+                        nodes<-DiagrammeR::create_nodes(
+                          nodes = n[n!=private$current],
+                          label = TRUE,
+                          style = "filled",
+                          color = "royalblue2",
+                          shape = "circle"
+                        )
+                        nodes <- rbind(nodes,DiagrammeR::create_nodes(
+                          nodes = private$current,
+                          label = TRUE,
+                          style = "filled",
+                          color = "springgreen3",
+                          shape = "circle"
+                        ))
+                        # produce the edge_df
+                        ttable[,3] <- sapply(ttable[,3],FUN=function(x){
+                                                              if (x) ", f()" else ""
+                                                            })
+                        directs <- (ttable[,1]!="*" & ttable[,2]!="*")
+                        directs <- matrix(ttable[directs,c(1,4,2,3)],ncol=4)
+                        edges <- DiagrammeR::create_edges(from=directs[,1],
+                                                          to=directs[,2],
+                                                          label=mapply(FUN=function(a,b){
+                                                                         paste0(a,b)
+                                                                       },
+                                                                       directs[,3],
+                                                                       directs[,4]))
+                        # create the graph so far
+                        g <- DiagrammeR::create_graph(
+                          nodes_df = nodes,
+                          edges_df = edges
+                        )
+                        # now add wildcard edges
+                        byany <- (ttable[,1]!="*" & ttable[,2]=="*")
+                        byany <- matrix(ttable[byany,c(1,4,2,3)],ncol=4)
+                        if (nrow(byany) > 0) {
+                          for (i in 1:nrow(byany)){
+                            if (!DiagrammeR::edge_present(g,byany[i,1],byany[i,2])){
+                              e<-DiagrammeR::create_edges(byany[i,1],
+                                                          byany[i,2],
+                                                          label=paste0(byany[i,3],byany[i,4]),
+                                                          color="#444444",
+                                                          fontcolor="#444444")
+                              g<-DiagrammeR::add_edge_df(g,e)
+                            }
+                          }
+                        }
+                        fromany <- (ttable[,1]=="*" & ttable[,2]!="*")
+                        fromany <- matrix(ttable[fromany,c(1,4,2,3)],ncol=4)
+                        if (nrow(fromany) > 0) {
+                          for (i in 1:nrow(fromany)){
+                            for (j in n){
+                              if (!DiagrammeR::edge_present(g,j,fromany[i,2])){
+                                e<-DiagrammeR::create_edges(j,
+                                                            fromany[i,2],
+                                                            label=
+                                                              paste0(fromany[i,3],
+                                                                     fromany[i,4]),
+                                                            color="#888888",
+                                                            fontcolor="#888888")
+                                g<-DiagrammeR::add_edge_df(g,e)
+                              }
+                            }
+                          }
+                        }
+                        default <- (ttable[,1]=="*" & ttable[,2]=="*")
+                        default <- matrix(ttable[default,c(1,4,2,3)],ncol=4)
+                        if (nrow(default) > 0) {
+                          for (i in 1:nrow(default)){
+                            for (j in n){
+                              if (!DiagrammeR::edge_present(g,j,default[i,2])){
+                                e<-DiagrammeR::create_edges(j,
+                                                            default[i,2],
+                                                            label=paste0(default[i,3],
+                                                                         default[i,4]),
+                                                            color="#BBBBBB",
+                                                            fontcolor="#BBBBBB")
+                                g<-DiagrammeR::add_edge_df(g,e)
+                              }
+                            }
+                          }
+                        }
+                        DiagrammeR::render_graph(g,layout="neato")
                       } else {
-                        warning("Sorry Dave, I can't do that.\nPlease install $PACKAGE")
+                        warning("Sorry Dave, I can't do that.\nPlease install DiagrammeR")
                       }
                     }
                   ), # end public members
@@ -212,6 +275,29 @@ Automat <- R6::R6Class("Automat",
                     fromany = NA,           # from-any-transitions by input
                     predicates = NA,        # state-dependent preprocesing of input
                     defaultAction = NULL,   # a default action if no transition pattern matches
-                    alwaysAction = NULL     # a function hook run after every step
+                    alwaysAction = NULL,     # a function hook run after every step
+                    ttable = function(){
+                      ttable <- c()
+                      for (s in keys(private$states)){
+                        t<-private$states[[s]]
+                        for (i in keys(t)) {
+                          ttable<-rbind(ttable,c(s,i,!is.null(t[[i]]$f),t[[i]]$t))
+                        }
+                      }
+                      t<-private$fromany
+                      for (i in keys(t)) {
+                        ttable<-rbind(ttable,c("*",i,!is.null(t[[i]]$f),t[[i]]$t))
+                      }
+                      t<-private$byany
+                      for (s in keys(t)) {
+                        ttable<-rbind(ttable,c(s,"*",!is.null(t[[s]]$f),t[[s]]$t))
+                      }
+                      if (!is.null(private$defaultAction)) {
+                        t<-private$defaultAction
+                        ttable<-rbind(ttable,c("*","*",!is.null(t$f),t$t))
+                      }
+                      if (length(ttable)>0) colnames(ttable)<-c("from","on input","function","to")
+                      return(ttable)
+                    }
                   ) # end private members
 )

@@ -38,7 +38,7 @@ An \code{Automat} is a finite state machine (or [DFA](https://en.wikipedia.org/w
   \item{\code{setState(to)}}{Set the \code{Automat} to a certain state (e.g. to the initial state).}
   \item{\code{read(input)}}{Tell the \code{Automat} to read/consume the given input and act upon it.}
   \item{\code{print(long=F)}}{Prints a summary of the \code{Automat}. When long is true, a full list of states and transitions is returned.}
-  \item{\code{visualize()}}{Prints the state graph of the \code{Automat}.}
+  \item{\code{visualize()}}{Prints the state graph of the \code{Automat} using the \code{DiagrammeR} package.}
 }
 }
 \examples{

@@ -125,6 +125,29 @@ test_that("long format printing works",{
   expect_output_file(A$print(long=T),"automat-longprint-4.txt",update=F)
 })
 
+test_that("visualization works",{
+  A<-createBasicAutomat()
+  A$addTransition(NA,"reset","ready",FUN=function(a,b,c){
+    paste0("automat went from (",a,") to (",c,") at input (",b,")")
+  })
+  A$addTransition(NA,"gnu","gnat")
+  A$addTransition(NA,NA,"gnu",FUN=function(a,b,c){
+    paste0("automat went from (",a,") to (",c,") at input (",b,")")
+  })
+  expect_equal_to_reference(A$visualize(),"automat-visual-1.rds")
+  A$addTransition(NA,NA,NA,FUN=function(a,b,c){
+    paste0("automat went from (",a,") to (",c,") at input (",b,")")
+  })
+  expect_equal_to_reference(A$visualize(),"automat-visual-2.rds")
+  A$setPredicate("gnat",function() "reset")
+  expect_equal_to_reference(A$visualize(),"automat-visual-3.rds")
+  A$addTransition("gnat",NA,"gnu",FUN=function(a,b,c){
+    paste0("automat went from (",a,") to (",c,") at input (",b,")") # this transition will never be matched
+  })
+  expect_equal_to_reference(A$visualize(),"automat-visual-4.rds")
+})
+
+
 test_that("Pokexample works",{
   A<-Automat$new()
   f<-function(s,i,t){paste0("You caught ",i,"!")} # nolint

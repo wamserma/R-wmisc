@@ -129,6 +129,13 @@ test_that("visualization of empty automat works",{
   A<-Automat$new()
   expect_equal_to_reference(A$visualize(),"automat-visual-0.rds")
 })
+
+test_that("visualization without set state works",{
+  A<-Automat$new()
+  A$addTransition("ready","ok","ready")
+  expect_equal_to_reference(A$visualize(),"automat-visual-nostate.rds")
+})
+
   
 test_that("visualization works",{
   A<-createBasicAutomat()

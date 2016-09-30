@@ -191,20 +191,27 @@ Automat <- R6::R6Class("Automat",
                         n <- unique(c(ttable[,1],ttable[,4]))
                         n <- n[n!="*"]
                         # get the nodes_df
+                        if (!is.na(private$current)){
+                          nn<-n[n!=private$current]
+                        } else {
+                          nn<-n
+                        }
                         nodes<-DiagrammeR::create_nodes(
-                          nodes = n[n!=private$current],
+                          nodes = nn,
                           label = TRUE,
                           style = "filled",
                           color = "royalblue2",
                           shape = "circle"
                         )
-                        nodes <- rbind(nodes,DiagrammeR::create_nodes(
-                          nodes = private$current,
-                          label = TRUE,
-                          style = "filled",
-                          color = "springgreen3",
-                          shape = "circle"
-                        ))
+                        if (!is.na(private$current)){
+                          nodes <- rbind(nodes,DiagrammeR::create_nodes(
+                            nodes = private$current,
+                            label = TRUE,
+                            style = "filled",
+                            color = "springgreen3",
+                            shape = "circle"
+                          ))
+                        }
                         # produce the edge_df
                         ttable[,3] <- sapply(ttable[,3],FUN=function(x){
                                                               if (x) ", f()" else ""

@@ -3,12 +3,16 @@
 \docType{class}
 \name{Automat}
 \alias{Automat}
-\title{Create a \code{Automat} for stateful computation, such as parsing.}
+\title{Create an \code{Automat} for stateful computation, such as parsing.}
 \format{An \code{\link{R6Class}} generator object.}
 \usage{
 # A <- Automat$new()
- # a$addTransition(from,input,to,FUN)
- # a$read(input)
+# a$addTransition(from,input,to,FUN)
+# a$setState(state)
+# a$setPredicate(state,PFUN)
+# a$read(input)
+# a$print(long=F)
+# a$visualize()
 }
 \arguments{
 \item{from}{A character object naming the state this transition starts from. Can be \code{NA} to produce a 'from-any'-transition (e.g. for triggering a reset into a special state).}
@@ -17,7 +21,13 @@
 
 \item{input}{The input triggering the state transition. Can be \code{NA} to create a 'on-any'-transition.}
 
+\item{state}{A character object defining a state.}
+
 \item{FUN}{A function taking the current state, the read input and the next state as parameters. The function need not be deterministic and can have side effects.}
+
+\item{PFUN}{A predicate function for the given stateThe funtion is invoked on the input before it is further processed. It is intended for more complex transitions conditions (e.g. input string has 3 "x"'s) or converting non-character inputs to character strings.}
+
+\item{long}{when \code{TRUE} a detailed description of the state machine is printed, a short summary otherwise (default behaviour)}
 }
 \value{
 For \code{new()} A new Automat object, nothing for \code{setState()}. The return value of \code{read()} depends on the function associated with the transition triggered.
@@ -26,25 +36,28 @@ For \code{new()} A new Automat object, nothing for \code{setState()}. The return
 Sometimes computation has to be stateful, such as in parsing files etc. The aim of the \code{Automat} class is to abstract this away from the user.
 }
 \details{
-An \code{Automat} is a finite state machine (or [DFA](https://en.wikipedia.org/wiki/Deterministic_finite_automaton)). It is first set up with a set of transitions. Then it is fed with inputs, triggering internal transitions and returning outputs as determined by the current internal state and the input. Each transition can be augmented by a user-supplied function, that can compute return values or trigger side effects. Support for 'from-any' and 'on-any' transitions is also provided. Explicitly set transitions take precedence over these wildcard transitions, with byany-transition taking precedence over fromany-transitions.
+An \code{Automat} is a finite state machine (or DFA[1]). For usage it is first set up with a set of transitions. Then it is fed with inputs, triggering internal transitions and returning outputs as determined by the current internal state and the input. Each transition can be augmented by a user-supplied function, that can compute return values or trigger side effects. Support for 'from-any' and 'by-any' transitions is also provided. Explicitly set transitions take precedence over these wildcard transitions, with by-any-transitiond taking precedence over from-any-transitions. Finally each state can be augmented with a predicate function that transforms the actual input into a new input that is actually used for selecting the proper transition. Each transition can also be annotated with a function that may generate additional outputs or side effects like maintaining stacks or other memory to implement more powerful classes of automata.
+
+Footnotes:
+[1]\url{https://en.wikipedia.org/wiki/Deterministic_finite_automaton}
 }
 \section{Methods}{
 
 
 \describe{
   \item{\code{new()}}{Create a new instance of an \code{Automat}.}
-  \item{\code{addTransition(from,input,to,FUN)}}{Add a transition 'from' a named state upon 'input' 'to' named state. While any comparable type would do, these values are restricted to character types by the internal implementation. Use 'as.character()' if your states are simply numbered. The function FUN is called with the previous state, the current state and the input as argument. It is used for generating side effects or producing output values.}
-  \item{\code{setPredicate(from,PFUN)}}{Used to set a predicate function \code{PFUN} for a given state. A predicate function is a function called on the input before it is processed. It must return a value of type character but can be used to extend the input domain to arbitrary objects and conveniently implement complex transitions (e.g. depending on prefixes).}
-  \item{\code{setState(to)}}{Set the \code{Automat} to a certain state (e.g. to the initial state).}
-  \item{\code{read(input)}}{Tell the \code{Automat} to read/consume the given input and act upon it.}
-  \item{\code{print(long=F)}}{Prints a summary of the \code{Automat}. When long is true, a full list of states and transitions is returned.}
-  \item{\code{visualize()}}{Prints the state graph of the \code{Automat} using the \code{DiagrammeR} package.}
+  \item{\code{addTransition(from,input,to,FUN)}}{Add a transition \code{from} a named state upon \code{input} \code{to} named state. While any comparable type would do, these values are restricted to character types by the internal implementation. Use \code{as.character()} if your states are simply numbered. The function \code{FUN} is called upon a successful transition with the previous state, the current state and the original input as argument. It is used for generating side effects or producing output values.}
+  \item{\code{setPredicate(state,PFUN)}}{Used to set a predicate function \code{PFUN} for a given state. A predicate function is a function called on the input before it is processed. It must return a value of type character but can be used to extend the input domain to arbitrary objects and conveniently implement complex transitions (e.g. depending on prefixes).}
+  \item{\code{setState(state)}}{Set the \code{Automat} to a certain state (e.g. to the initial state).}
+  \item{\code{read(input)}}{Tell the \code{Automat} to read/consume the given \code{input} and act upon it.}
+  \item{\code{print(long=F)}}{Prints a summary of the \code{Automat}. When \code{long} is \code{TRUE}, a full list of states and transitions is returned.}
+  \item{\code{visualize()}}{Displays the state graph of the \code{Automat} using the \code{DiagrammeR} package.}
 }
 }
 \examples{
-  A<-Automat$new()
-  f<-function(s,i,t){paste0("You caught ",i,"!")}
-  g<-function(s,i,t){paste0("You caught the flu!")}
+  A <- Automat$new()
+  f <- function(s,i,t){paste0("You caught ",i,"!")}
+  g <- function(s,i,t){paste0("You caught the flu!")}
   A$addTransition("ready",NA,FUN=f) # add a loop
   A$setState("ready")
   A$read("Pikachu")
@@ -55,7 +68,7 @@ An \code{Automat} is a finite state machine (or [DFA](https://en.wikipedia.org/w
   A$read("Bulbasaur")
 
 \dontrun{
-}
+  A$visualize()}
 }
 \keyword{datasets}
 

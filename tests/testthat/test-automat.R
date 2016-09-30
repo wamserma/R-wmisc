@@ -89,7 +89,7 @@ test_that("predicates are used",{
   expect_output(A$print(),"An Automat with 4 states.\nCurrent state is: steady")
   expect_null(A$read("gnu"))
   expect_output(A$print(),"An Automat with 4 states.\nCurrent state is: gnat")
-  expect_output(A$read(3L),"automat went from .gnat. to .ready. at input .reset.")
+  expect_output(A$read(3L),"automat went from .gnat. to .ready. at input .3.")
 })
 
 

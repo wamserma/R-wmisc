@@ -136,6 +136,13 @@ test_that("visualization without set state works",{
   expect_equal_to_reference(A$visualize(),"automat-visual-nostate.rds")
 })
 
+test_that("visualization with implicit state works",{
+  A<-Automat$new()
+  A$addTransition("ready","ok","ready")
+  A$setState("foo")
+  expect_equal_to_reference(A$visualize(),"automat-visual-implicit.rds")
+})
+
   
 test_that("visualization works",{
   A<-createBasicAutomat()

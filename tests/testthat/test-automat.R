@@ -125,6 +125,11 @@ test_that("long format printing works",{
   expect_output_file(A$print(long=T),"automat-longprint-4.txt",update=F)
 })
 
+test_that("visualization of empty automat works",{
+  A<-Automat$new()
+  expect_equal_to_reference(A$visualize(),"automat-visual-0.rds")
+})
+  
 test_that("visualization works",{
   A<-createBasicAutomat()
   A$addTransition(NA,"reset","ready",FUN=function(a,b,c){

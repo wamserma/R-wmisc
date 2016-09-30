@@ -210,23 +210,26 @@ Automat <- R6::R6Class("Automat",
                                                               if (x) ", f()" else ""
                                                             })
                         directs <- (ttable[,1]!="*" & ttable[,2]!="*")
-                        directs <- matrix(ttable[directs,c(1,4,2,3)],ncol=4)
-                        edges <- DiagrammeR::create_edges(from=directs[,1],
+                        if (length(directs > 0) & any(directs)){
+                          directs <- matrix(ttable[directs,c(1,4,2,3)],ncol=4)
+                          edges <- DiagrammeR::create_edges(from=directs[,1],
                                                           to=directs[,2],
                                                           label=mapply(FUN=function(a,b){
                                                                          paste0(a,b)
                                                                        },
                                                                        directs[,3],
                                                                        directs[,4]))
-                        # create the graph so far
-                        g <- DiagrammeR::create_graph(
-                          nodes_df = nodes,
-                          edges_df = edges
-                        )
+                          # create the graph so far
+                          g <- DiagrammeR::create_graph(
+                            nodes_df = nodes,
+                            edges_df = edges
+                        )} else {
+                          g <- DiagrammeR::create_graph()
+                        }
                         # now add wildcard edges
                         byany <- (ttable[,1]!="*" & ttable[,2]=="*")
-                        byany <- matrix(ttable[byany,c(1,4,2,3)],ncol=4)
-                        if (nrow(byany) > 0) {
+                        if (length(byany > 0) & any(byany)){
+                          byany <- matrix(ttable[byany,c(1,4,2,3)],ncol=4)
                           for (i in 1:nrow(byany)){
                             if (!DiagrammeR::edge_present(g,byany[i,1],byany[i,2])){
                               e<-DiagrammeR::create_edges(byany[i,1],
@@ -239,8 +242,8 @@ Automat <- R6::R6Class("Automat",
                           }
                         }
                         fromany <- (ttable[,1]=="*" & ttable[,2]!="*")
-                        fromany <- matrix(ttable[fromany,c(1,4,2,3)],ncol=4)
-                        if (nrow(fromany) > 0) {
+                        if (length(fromany > 0) & any(fromany)){
+                          fromany <- matrix(ttable[fromany,c(1,4,2,3)],ncol=4)
                           for (i in 1:nrow(fromany)){
                             for (j in n){
                               if (!DiagrammeR::edge_present(g,j,fromany[i,2])){
@@ -257,8 +260,8 @@ Automat <- R6::R6Class("Automat",
                           }
                         }
                         default <- (ttable[,1]=="*" & ttable[,2]=="*")
+                        if (length(default > 0) & any(default)){
                         default <- matrix(ttable[default,c(1,4,2,3)],ncol=4)
-                        if (nrow(default) > 0) {
                           for (i in 1:nrow(default)){
                             for (j in n){
                               if (!DiagrammeR::edge_present(g,j,default[i,2])){

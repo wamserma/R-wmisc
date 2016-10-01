@@ -1,0 +1,198 @@
+---
+title: "Using Automat"
+author: "Markus Wamser"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+  fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Usage of the `Automat` class is best demonstrated with a small example. We will implement the control logic of a (very simple) coffee vending machine using the `Automat` class, because coffee vending machines are usually programmed in `R`, right? 
+
+## Creating the Coffee Vending Machine `M`
+
+First of all, we want the package loaded and attached.
+
+```{r}
+library(Wmisc)
+```
+
+A new machine is then easily produced.
+
+```{r}
+M <- Automat$new()
+```
+
+## Basic operation
+
+Let's add the simple operations: Assuming there are enough beans available, brew a nice cup of joe.
+
+```{r}
+M$addTransition("beans available","button pressed","ground coffee",function(s,i,t){
+  "grinding coffee"
+})
+M$addTransition("ground coffee","heat water","water heated",function(s,i,t){
+  "heating water"
+})
+M$addTransition("water heated","brew coffee","coffee ready",function(s,i,t){
+  "brewing coffee"
+})
+M$addTransition("coffee ready","take coffee","beans available",function(s,i,t){
+  "enjoy your coffee"
+})
+
+M
+```
+
+This is how out machine looks like:
+```{r, fig.show='hold'}
+M$visualize()
+```
+
+Before we can start an example execution, we need to set the initial state:
+```{r, fig.show='hold'}
+M$setState("beans available")
+M
+M$visualize()
+```
+
+And we can execute a basic lifecycle.
+
+```{r}
+M$read("button pressed")
+M$read("heat water")
+M$read("brew coffee")
+M$read("take coffee")
+```
+
+But such a machine would get very bad usability results. I just want to press a single button to get my coffee. For this, the machine would have to go without further input or 'spontaneus' from one state to another. As an observer cannot determine when this will happen, this can be basically seen as a single transition and the states should be contracted. Alternatively, we can provide an external queue that holds the inputs and where the machine can push back inputs for itself.
+
+```{r}
+Queue <- R6::R6Class("Queue",
+                      public = list(
+                        pop = function(){
+                          r <- private$q[1]
+                          private$q<-private$q[-1]
+                          r
+                        },
+                        push = function(e){
+                          private$q<-c(e,private$q)
+                        },
+                        append = function(e){
+                          private$q<-c(private$q,e)
+                        },
+                        length = function(){
+                          length(private$q)
+                        }
+                      ),
+                      private = list(q=c())
+                    )
+```
+
+
+```{r}
+q <- Queue$new()
+M <- Automat$new()
+
+M$addTransition("beans available","button pressed","ground coffee",function(s,i,t){
+   q$push("heat water")
+   "grinding coffee"
+})
+M$addTransition("ground coffee","heat water","water heated",function(s,i,t){
+  q$push("brew coffee")
+  "heating water"
+})
+M$addTransition("water heated","brew coffee","coffee ready",function(s,i,t){
+  "brewing coffee"
+})
+M$addTransition("coffee ready","take coffee","beans available",function(s,i,t){
+"enjoy your coffee"
+})
+
+M$setState("beans available")
+q$append("button pressed")
+q$append("take coffee")
+
+while (q$length() > 0){
+  print(M$read(q$pop()))
+}
+
+```
+
+As a last example, we look at a more complex variant:
+
+```{r}
+M <- Automat$new()
+
+M$addTransition("empty","fill beans","no water")
+M$addTransition("empty","fill water","no beans")
+M$addTransition("empty",NA,"empty",function(s,i,t){          # (1)
+  print(paste0("'", i, "': that does not help, still ", t))
+  return()
+})
+
+M$addTransition("no water","fill water","ready")
+M$addTransition("no beans","fill beans","ready")
+
+M$setPredicate("no beans",function(i){                       # (2)
+  if (grepl("fill beans|coffee",i)){
+    return("fill beans")
+  }
+  return(i)
+})
+
+M$addTransition("ready","press button","coffee ready",function(s,i,t){
+  print("grinding coffee")                                   # (3)
+  print("heating water")
+  print("brewing coffee")
+  print("please take your coffee")
+  return()
+})
+
+M$addTransition("coffee ready","take coffee","ready",function(s,i,t){
+  print("enjoy your coffee")
+  return()
+})
+
+M$addTransition(NA,"clean machine","empty")                  # (4)
+M$addTransition(NA,NA,"awaiting service",function(s,i,t){    # (5)
+  print(paste0("Thou shall not ",i," in state (",s,").\nPlease clean the machine."))
+  return()
+})         
+
+M$addTransition(NA,NA,NA,function(s,i,t){                    # (6)
+  print(paste0("Log: (",s,",",i,",",t,")"))
+})         
+
+M$setState("empty")
+```
+
+This example shows the flexibility of the Automat class. At (1) we have a "by-any"-transition. If none of the explictly state inputs is matched, this wildcard transition matches and is taken. The complementary "from-any" transition type is used at (4): Whenever no explicit transition nor a "by-any"-transition match, the "from-any"-transitions are scanned for matching inputs. In the example a "clean machine" is accepted in any state and leads to an "empty" machine.
+Finally a default or fallback action is set at (5). Whenever something unexpected happens to the coffee machine it blocks and awaits to be cleaned. This is not to be confused with the always-action set at (6). It is not a true transition and provides a hook for a function that is always executed after a valid transition. Here it is used to provide logging.
+Another feature is shown at (2): Each state can be outfitted with a predicate function, that pre-processes the input before it is matched againt the possible transitions. Here you can say "fill beans" or "fill coffee" to get from "no beans"to "ready".
+
+```{r, fig.show='hold', fig.cap = "The Machine."}
+M$visualize()
+
+```
+Above is the transition graph of the coffee machine. Transitions that invoke a function are marked with "f()".
+
+
+```{r}
+M$read("fill tea")
+M$read("fill water")
+M$read("fill coffee")
+M$read("press button")
+M$read("take coffee")
+M$read("press button")
+M$read("press button")
+M$read("fill coffee")
+M$read("clean machine")
+M$read("fill beans")
+M$read("fill water")
+```
+

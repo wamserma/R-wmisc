@@ -9,6 +9,8 @@ This is a collection of helper functions I wrote for myself.
 
 + `Tokenizer`: A convenient method to read a file step-by-step with wrapper functions to read a file as a whole. For smaller files (a few dozen Megabytes) this is as fast as `base::readLines()` and `Kmisc::readlines()`. Quick benchmarks showed that for files of this size access times on mass storage (including caching by the OS) are magnitudes higher than actual read times. For big files the use case for `Tokenizer` is read-and-process/parse, reducing memory load compared to the other methods.
 
++ `Automat`: A tool to implement State Machines for transparent stateful computation. Idea sparked by [glyph/automat](https://github.com/glyph/automat). See the Vignette for details.
+
 ## I want it!
 
 ```r

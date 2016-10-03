@@ -87,7 +87,7 @@ List CWmisc_mmap(std::string path) {
   }
   
 #if _POSIX_C_SOURCE >= 200112L  
-  posix_madvise(map, sz, POSIX_MADV_SEQUENTIAL)   // tell the OS we will access sequentially
+  posix_madvise(map, sz, POSIX_MADV_SEQUENTIAL);  // tell the OS we will access sequentially
                                                   // we don't care for a returned error
                                                   // see man7.org/linux/man-pages/man3/posix_madvise.3.html
 #endif

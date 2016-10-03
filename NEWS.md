@@ -2,6 +2,7 @@
 
 ## Version 0.2.0
 - ADD: Automat
+- Improvement: Tokenizer now tells OS that files will be accessed sequentially (for better caching)
 
 ## Version 0.1.1
 

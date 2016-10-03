@@ -86,7 +86,12 @@ List CWmisc_mmap(std::string path) {
     return output;                                // # nocov
   }
   
-  uint32_t map_h;
+#if _POSIX_C_SOURCE >= 200112L  
+  posix_madvise(map, sz, POSIX_MADV_SEQUENTIAL);  // tell the OS we will access sequentially
+                                                  // we don't care for a returned error
+                                                  // see man7.org/linux/man-pages/man3/posix_madvise.3.html
+#endif
+  uint32_t map_h;                                                
   uint32_t map_l;
   
   unpackPtr(&map_h,&map_l,map);
@@ -104,7 +109,7 @@ List CWmisc_mmap(std::string path) {
   HANDLE hMap=0;
   DWORD dwFileSize=0;
   const char* fnam = path.c_str();
-  hFile = CreateFile(fnam, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+  hFile = CreateFile(fnam, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
   if (hFile==INVALID_HANDLE_VALUE) {
     warning("File not found: ",fnam); 
     List output = List::get_na();     

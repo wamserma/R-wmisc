@@ -5,6 +5,63 @@
 
 using namespace Rcpp;
 
+// strHead
+char strHead(std::string s);
+RcppExport SEXP Wmisc_strHead(SEXP sSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type s(sSEXP);
+    rcpp_result_gen = Rcpp::wrap(strHead(s));
+    return rcpp_result_gen;
+END_RCPP
+}
+// strHeadLower
+char strHeadLower(std::string s);
+RcppExport SEXP Wmisc_strHeadLower(SEXP sSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type s(sSEXP);
+    rcpp_result_gen = Rcpp::wrap(strHeadLower(s));
+    return rcpp_result_gen;
+END_RCPP
+}
+// strTail
+std::string strTail(std::string s);
+RcppExport SEXP Wmisc_strTail(SEXP sSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type s(sSEXP);
+    rcpp_result_gen = Rcpp::wrap(strTail(s));
+    return rcpp_result_gen;
+END_RCPP
+}
+// strTake
+std::string strTake(std::string s, int n);
+RcppExport SEXP Wmisc_strTake(SEXP sSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type s(sSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(strTake(s, n));
+    return rcpp_result_gen;
+END_RCPP
+}
+// strDrop
+std::string strDrop(std::string s, int n);
+RcppExport SEXP Wmisc_strDrop(SEXP sSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type s(sSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(strDrop(s, n));
+    return rcpp_result_gen;
+END_RCPP
+}
 // CWmisc_mmap
 List CWmisc_mmap(std::string path);
 RcppExport SEXP Wmisc_CWmisc_mmap(SEXP pathSEXP) {

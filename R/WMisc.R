@@ -15,9 +15,8 @@
 NULL
 #>NULL
 
-
 #'@importFrom Rcpp evalCpp
 #'@useDynLib Wmisc
 
 NULL
-# NULL is needed for roxygen, otherwise import/useDynLib is ignored
+# NULL is needed for roxygen, otherwise import/useDynLib is ignored (roxygen does not detect the end of the comment section)

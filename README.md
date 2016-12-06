@@ -37,7 +37,7 @@ install.packages(c("devtools", "hash", "knitr", "rmarkdown", "roxygen2", "testth
 if you want, install the optional dependencies
 
 ```r
-install.packages(c("covr", "DiagrammeR"))
+install.packages(c("covr", "DiagrammeR", "lintr"))
 ```
 
 open project in RStudio and hit `Ctrl + Shift + B` 

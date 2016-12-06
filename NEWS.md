@@ -1,5 +1,8 @@
 # Wmisc Version History
 
+## Version 0.3.0
+- ADD: String functions
+
 ## Version 0.2.0
 - ADD: Automat
 - Improvement: Tokenizer now tells OS that files will be accessed sequentially (for better caching)

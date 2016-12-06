@@ -11,6 +11,8 @@ This is a collection of helper functions I wrote for myself.
 
 + `Automat`: A tool to implement State Machines for transparent stateful computation. Idea sparked by [glyph/automat](https://github.com/glyph/automat). See the Vignette for details.
 
++ `Strings`: A few string functions that were once faster than built-in alternatives and can still be used for convenience with R 3.x onward (although not for performance gains).
+
 ## I want it!
 
 ```r

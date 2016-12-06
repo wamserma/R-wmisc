@@ -31,10 +31,16 @@ git clone https://github.com/wamserma/R-wmisc.git
 install the build dependencies
 
 ```r
-install.packages(c("devtools", "roxygen2", "testthat", "knitr"))
+install.packages(c("devtools", "hash", "knitr", "rmarkdown", "roxygen2", "testthat"))
 ```
 
-open project in RStudio and hit `Ctrl + Shift + D`, `Ctrl + Shift + B` 
+if you want, install the optional dependencies
+
+```r
+install.packages(c("covr", "DiagrammeR"))
+```
+
+open project in RStudio and hit `Ctrl + Shift + B` 
 
 It is suggested to use a GCC 5 or newer release to enable overflow checks in C, but the package will also build with the GCC 4.6 used in RTools 3.3.
 

@@ -1,6 +1,9 @@
 #' Head and Tail functions for Strings.
 #' 
-#' @description C++ implemetations that are faster than using R's builtin strsplit and then selecting elements. All functions but \code{strTake} operate with O(1) memory.
+#' @description C++ implemetations of convenience functions for strings. All functions but \code{strTake} operate with O(1) memory.
+#' 
+#' @section Note:
+#' While originally also implemented for performance reasons, the built-in \code{substr} function is usually faster due to the Call-overhead. At least for R 3.x onward the built-in functions should be preferred when performance is an issue. See the vignette for details.
 #' 
 #' @details A few convenient list operations, tailored to 8-bit-character strings. 
 #' @usage 

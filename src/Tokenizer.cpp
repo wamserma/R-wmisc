@@ -209,11 +209,11 @@ List CWmisc_nextToken(IntegerVector currentPtr, IntegerVector delims){
   return output;
 }
 
-// check whether target is in valid range, that is target < map + offset
+// check whether target is in valid range, that is base <= target < base + offset
 //[[Rcpp::export]]
-bool CWmisc_validPtr(IntegerVector map, IntegerVector target, int offset){
+bool CWmisc_validPtr(IntegerVector base, IntegerVector target, int offset){
   
-  uint64_t start = (uint64_t)packPtr(map[0],map[1]);
+  uint64_t start = (uint64_t)packPtr(base[0],base[1]);
   uint64_t ptr = (uint64_t)packPtr(target[0],target[1]);
   uint64_t end;
   
@@ -222,7 +222,7 @@ bool CWmisc_validPtr(IntegerVector map, IntegerVector target, int offset){
 #if __GNUC__ > 4  
   // error on overflow; builtins available for GCC >= 5
   if (__builtin_add_overflow_p (start,offset, (uint64_t) 0))
-    stop("Overflow in adress computation.");
+    stop("Overflow in address computation.");
 #endif
   end = start + offset;
   if (ptr > end) return false;
@@ -240,7 +240,7 @@ IntegerVector CWmisc_subPtr(IntegerVector a, IntegerVector b){
 #if __GNUC__ > 4  
   // error on overflow; builtins available for GCC >= 5
   if (__builtin_sub_overflow_p (start,offset,(uint64_t) 0))
-    stop("Underflow in adress computation.");
+    stop("Underflow in address computation.");
 #endif
   end = start - offset;
   return(unpackPtrV((void *)end));
@@ -256,7 +256,7 @@ IntegerVector CWmisc_addPtr(IntegerVector a, IntegerVector b){
 #if __GNUC__ > 4  
   // error on overflow; builtins available for GCC >= 5
   if (__builtin_add_overflow_p (start,offset,(uint64_t) 0))
-    stop("Underflow in adress computation.");
+    stop("Overflow in address computation.");
 #endif
   end = start + offset;
   return(unpackPtrV((void *)end));

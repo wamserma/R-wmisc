@@ -58,5 +58,3 @@ NULL
 #' strDrop("Gnus and Gnats",9)
 #' @export strDrop
 NULL
-
-

@@ -110,7 +110,7 @@ Tokenizer <- R6::R6Class("Tokenizer",
                       return(CWmisc_subPtr(private$currentPtr,private$fd$map))
                     },
                     setOffset = function(ptr) {
-                      private$currentPtr<-CWmisc_subPtr(private$fd$map,ptr)
+                      private$currentPtr<-CWmisc_addPtr(private$fd$map,ptr)
                     },
                     nextToken = function() {
                       if (private$nofile) return(NA)

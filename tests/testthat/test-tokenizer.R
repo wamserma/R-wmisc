@@ -169,4 +169,16 @@ test_that("resetting the ptr works", {
   expect_identical(t1.t, tok$nextToken())
   expect_identical(t2.p, tok$getOffset())
   expect_identical(t2.t, tok$nextToken())
+  tok$setOffset(c(0,25))
+  expect_identical("okeniser.", tok$nextToken())
+})
+
+test_that("ptr boundary checking works", {
+  tok<-Tokenizer$new("token.txt")
+  tok$setOffset(c(0,12345))
+  expect_true(is.na(tok$nextToken()))
+  tok$close()
+  tok<-Tokenizer$new("token.txt")
+  tok$setOffset(c(0,-12345))
+  expect_true(is.na(tok$nextToken()))
 })

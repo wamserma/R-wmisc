@@ -216,6 +216,8 @@ bool CWmisc_validPtr(IntegerVector map, IntegerVector target, int offset){
   uint64_t start = (uint64_t)packPtr(map[0],map[1]);
   uint64_t ptr = (uint64_t)packPtr(target[0],target[1]);
   uint64_t end;
+  
+  if (ptr < start) return false;
 
 #if __GNUC__ > 4  
   // error on overflow; builtins available for GCC >= 5

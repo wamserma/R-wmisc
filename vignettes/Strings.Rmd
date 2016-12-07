@@ -1,0 +1,72 @@
+---
+title: "Strings"
+author: "Markus Wamser"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+  fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Strings}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+A few examples of the string helper functions and a comparison to `substr` and other R base functions.
+
+First of all, we want the package loaded and attached. Same for the benchmarks.
+
+```{r}
+library(Wmisc)
+library(microbenchmark)
+```
+
+A string from (http://slipsum.com/).
+
+```{r}
+s <- "You think water moves fast? You should see ice. It moves like it has a mind. Like it knows it killed the world once and got a taste for murder. After the avalanche, it took us a week to climb out. Now, I don't know exactly when we turned on each other, but I know that seven of us survived the slide... and only five made it out. Now we took an oath, that I'm breaking now. We said we'd say it was the snow that killed the other two, but it wasn't. Nature is lethal but it doesn't hold a candle to man."
+```
+
+# Head and Tail
+
+## demo
+
+```{r}
+strHead(s)
+strHeadLower(s)
+strTail(s)
+```
+
+## compare to built-in substr
+
+```{r}
+substr(s,1,1)
+tolower(substr(s,1,1))
+substring(s,2)
+```
+
+## benchmark
+
+The benchmark results will vary greatly depending on the version of R used. With R 3.3 the built-in functions should be preferred.
+
+```{r}
+microbenchmark(substr(s,1,1),strHead(s),times=100000)
+microbenchmark(tolower(substr(s,1,1)),strHeadLower(s),times=100000)
+microbenchmark(substring(s,2),strTail(s),times=100000)
+```
+
+# Take and Drop
+
+```{r}
+substr(s,1,42)
+strTake(s,42)
+```
+
+```{r}
+substring(s,43)
+strDrop(s,42)
+```
+
+```{r}
+microbenchmark(substr(s,1,42),strTake(s,42),times=100000)
+microbenchmark(substring(s,43),strDrop(s,42),times=100000)
+```

@@ -23,7 +23,7 @@
 A new Tokenizer object, backed by a memory mapped file and the delimiters set to the default values.
 }
 \description{
-Reading and processing tokens from a text file usually is done in three steps: Load the file, cut into tokenst, act upon the resulting vector of strings.
+Reading and processing tokens from a text file usually is done in three steps: Load the file, cut into tokens, act upon the resulting vector of strings.
 The \code{Tokenizer} aims to simplify and streamline the process, when tokens must be processed in a sequential manner.
 }
 \details{
@@ -68,7 +68,7 @@ tok$setDelimiters(c(59L,0xaL))                     # new Delimiters: ';', newlin
 tok$setDelimiters(as.integer(charToRaw(";\\n")))    # the same
 tok$nextToken()
 tok$setDelimiters(Tokenizer$new()$getDelimiters()) # reset to default
-while(!is.na(s<-tok$nextToken())) print(s)       # print the remaing tokens of file
+while(!is.na(s<-tok$nextToken())) print(s)         # print the remaing tokens of file
 tok$close()                                        # good style, but not required
 }
 }

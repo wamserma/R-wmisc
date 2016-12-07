@@ -218,10 +218,11 @@ bool CWmisc_validPtr(IntegerVector map, IntegerVector target, int offset){
   uint64_t end;
 
 #if __GNUC__ > 4  
-  if (__builtin_uaddll_overflow(start,offset,&end)) stop("Overflow in adress computation."); // error on overflow; we expect GCC > 5
-#else
-  end = start + offset;
+  // error on overflow; builtins available for GCC >= 5
+  if (__builtin_add_overflow_p (start,offset, (uint64_t) 0))
+    stop("Overflow in adress computation.");
 #endif
+  end = start + offset;
   if (ptr > end) return false;
   return true;
 }

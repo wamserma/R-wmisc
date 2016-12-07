@@ -96,15 +96,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // CWmisc_validPtr
-bool CWmisc_validPtr(IntegerVector map, IntegerVector target, int offset);
-RcppExport SEXP Wmisc_CWmisc_validPtr(SEXP mapSEXP, SEXP targetSEXP, SEXP offsetSEXP) {
+bool CWmisc_validPtr(IntegerVector base, IntegerVector target, int offset);
+RcppExport SEXP Wmisc_CWmisc_validPtr(SEXP baseSEXP, SEXP targetSEXP, SEXP offsetSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerVector >::type map(mapSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type base(baseSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type target(targetSEXP);
     Rcpp::traits::input_parameter< int >::type offset(offsetSEXP);
-    rcpp_result_gen = Rcpp::wrap(CWmisc_validPtr(map, target, offset));
+    rcpp_result_gen = Rcpp::wrap(CWmisc_validPtr(base, target, offset));
     return rcpp_result_gen;
 END_RCPP
 }

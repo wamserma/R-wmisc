@@ -33,8 +33,8 @@ CWmisc_nextToken <- function(currentPtr, delims) {
     .Call('Wmisc_CWmisc_nextToken', PACKAGE = 'Wmisc', currentPtr, delims)
 }
 
-CWmisc_validPtr <- function(map, target, offset) {
-    .Call('Wmisc_CWmisc_validPtr', PACKAGE = 'Wmisc', map, target, offset)
+CWmisc_validPtr <- function(base, target, offset) {
+    .Call('Wmisc_CWmisc_validPtr', PACKAGE = 'Wmisc', base, target, offset)
 }
 
 CWmisc_subPtr <- function(a, b) {

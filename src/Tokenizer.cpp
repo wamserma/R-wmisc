@@ -192,7 +192,8 @@ void CWmisc_munmap(List fdVec) {
 List CWmisc_nextToken(IntegerVector currentPtr, IntegerVector delims){
   
   char* start = (char*)packPtr(currentPtr[0],currentPtr[1]);
-  char d[delims.size()+1];
+  
+  char *d = new char[delims.size()+1];
 
   // copy the delimiters from the IntegerVector to a char array usable by strcspn
   for (int i=0;i<delims.size();i++) d[i] = (char)delims[i];
@@ -200,6 +201,7 @@ List CWmisc_nextToken(IntegerVector currentPtr, IntegerVector delims){
   
   size_t length = strcspn(start, d);
   
+  delete[] d;
   // create the return value and copy the token
   
   List output = List::create(Rcpp::Named("token") = string(start, length),

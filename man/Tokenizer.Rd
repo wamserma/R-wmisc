@@ -11,6 +11,8 @@
 # Tokenizer$setDelimiters(delims)
 # Tokenizer$nextToken()
 # Tokenizer$close()
+# getOffset()
+# setOffset(offset)
 }
 \arguments{
 \item{filename}{The file to open.}
@@ -18,6 +20,8 @@
 \item{skipEmptyTokens}{set whether empty tokens ("") shall be skipped or returned}
 
 \item{delims}{An integer vector holding the ASCII-codes of characters that serve as delimiters. If not set, it defaults to blank, tab, carriage return and linefeed (the last two together resemble a Windows newline).}
+
+\item{offset}{an integer vector of length >= 2, where the first component holds the upper 32 bits of the offset and the second component holds the lower 32 bit of the offset}
 }
 \value{
 A new Tokenizer object, backed by a memory mapped file and the delimiters set to the default values.
@@ -46,6 +50,8 @@ Both calls will give the same result.
   \item{\code{getDelimiters()}}{Get the current list of delimiters.}
   \item{\code{close()}}{Close the file behind the tokenizer. Future calls to \code{nextToken()} will return \code{NA}. It is considered good style to close the file manually to avoid to many open handles. The file will be closed automatically when there are no more references to the \code{Tokenizer} and it is garbage collected or upon exiting the R session.}
   \item{\code{print()}}{Prints the name of the currently opened file.}
+  \item{\code{getOffset()}}{Get the offset relative to the beginning of the file of the next token.}
+  \item{\code{setOffset()}}{Set the offset where reading should continue.}
 }
 }
 

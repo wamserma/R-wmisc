@@ -108,3 +108,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// CWmisc_subPtr
+IntegerVector CWmisc_subPtr(IntegerVector a, IntegerVector b);
+RcppExport SEXP Wmisc_CWmisc_subPtr(SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type a(aSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(CWmisc_subPtr(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// CWmisc_addPtr
+IntegerVector CWmisc_addPtr(IntegerVector a, IntegerVector b);
+RcppExport SEXP Wmisc_CWmisc_addPtr(SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type a(aSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(CWmisc_addPtr(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}

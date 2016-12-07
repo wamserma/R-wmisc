@@ -227,3 +227,35 @@ bool CWmisc_validPtr(IntegerVector map, IntegerVector target, int offset){
   return true;
 }
 
+// pointer arithmetic
+//[[Rcpp::export]]
+IntegerVector CWmisc_subPtr(IntegerVector a, IntegerVector b){
+  
+  uint64_t start = (uint64_t)packPtr(a[0],a[1]);
+  uint64_t offset = (uint64_t)packPtr(b[0],b[1]);
+  uint64_t end;
+  
+#if __GNUC__ > 4  
+  // error on overflow; builtins available for GCC >= 5
+  if (__builtin_sub_overflow_p (start,offset,(uint64_t) 0))
+    stop("Underflow in adress computation.");
+#endif
+  end = start - offset;
+  return(unpackPtrV((void *)end));
+}
+
+//[[Rcpp::export]]
+IntegerVector CWmisc_addPtr(IntegerVector a, IntegerVector b){
+  
+  uint64_t start = (uint64_t)packPtr(a[0],a[1]);
+  uint64_t offset = (uint64_t)packPtr(b[0],b[1]);
+  uint64_t end;
+  
+#if __GNUC__ > 4  
+  // error on overflow; builtins available for GCC >= 5
+  if (__builtin_add_overflow_p (start,offset,(uint64_t) 0))
+    stop("Underflow in adress computation.");
+#endif
+  end = start + offset;
+  return(unpackPtrV((void *)end));
+}

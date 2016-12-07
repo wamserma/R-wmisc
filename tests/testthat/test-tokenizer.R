@@ -155,3 +155,18 @@ test_that("readlines() works", {
   expect_warning(u<-readlines("foo"))
   expect_identical(u, as.character(c()))
 })
+
+test_that("resetting the ptr works", {
+  tok<-Tokenizer$new("token.txt")
+  t1.p<-tok$getOffset()
+  expect_equal(t1.p, c(0,0))
+  t1.t<-tok$nextToken()
+  t2.p<-tok$getOffset()
+  expect_equal(t2.p, c(0,4))
+  t2.t<-tok$nextToken()
+  tok$setOffset(t1.p)
+  expect_identical(t1.p, tok$getOffset())
+  expect_identical(t1.t, tok$nextToken())
+  expect_identical(t2.p, tok$getOffset())
+  expect_identical(t2.t, tok$nextToken())
+})

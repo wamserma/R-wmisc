@@ -37,3 +37,11 @@ CWmisc_validPtr <- function(map, target, offset) {
     .Call('Wmisc_CWmisc_validPtr', PACKAGE = 'Wmisc', map, target, offset)
 }
 
+CWmisc_subPtr <- function(a, b) {
+    .Call('Wmisc_CWmisc_subPtr', PACKAGE = 'Wmisc', a, b)
+}
+
+CWmisc_addPtr <- function(a, b) {
+    .Call('Wmisc_CWmisc_addPtr', PACKAGE = 'Wmisc', a, b)
+}
+

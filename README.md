@@ -33,7 +33,7 @@ git clone https://github.com/wamserma/R-wmisc.git
 install the build dependencies
 
 ```r
-install.packages(c("devtools", "hash", "knitr", "rmarkdown", "roxygen2", "testthat"))
+install.packages(c("devtools", "hash", "knitr", "microbenchmark", "rmarkdown", "roxygen2", "testthat"))
 ```
 
 if you want, install the optional dependencies

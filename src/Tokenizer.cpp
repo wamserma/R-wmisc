@@ -253,9 +253,9 @@ IntegerVector CWmisc_subPtr(IntegerVector a, IntegerVector b){
   if (__builtin_sub_overflow_p (start,offset, (uint64_t) 0))
     stop("Overflow in address computation.");
   else
-    end = start + offset;
+    end = start - offset;
 #else
-  end = start + offset;
+  end = start - offset;
 #endif 
 return(unpackPtrV((void *)end));
 }

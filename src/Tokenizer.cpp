@@ -219,12 +219,22 @@ bool CWmisc_validPtr(IntegerVector base, IntegerVector target, int offset){
   
   if (ptr < start) return false;
 
-#if __GNUC__ > 4  
-  // error on overflow; builtins available for GCC >= 5
+#if (__GNUC__ > 4) && (__GNUC__ < 7)
+ bool err;
+ if (sizeof(uint64_t) == sizeof(unsigned int)) err = __builtin_uadd_overflow (start,offset, &end)
+ else if (sizeof(uint64_t) == sizeof(unsigned long int)) err = __builtin_uaddl_overflow (start,offset, &end)
+ else if (sizeof(uint64_t) == sizeof(unsigned long long int)) err = __builtin_uaddll_overflow (start,offset, &end)
+ else err = __builtin_add_overflow (start,offset, &end)
+ if (err) stop("Overflow in address computation.");
+#elif __GNUC__ > 6  
+  // error on overflow; builtins available for GCC >= 7
   if (__builtin_add_overflow_p (start,offset, (uint64_t) 0))
     stop("Overflow in address computation.");
-#endif
-  end = start + offset;
+  else
+    end = start + offset;
+#else
+    end = start + offset;
+#endif  
   if (ptr > end) return false;
   return true;
 }
@@ -237,13 +247,23 @@ IntegerVector CWmisc_subPtr(IntegerVector a, IntegerVector b){
   uint64_t offset = (uint64_t)packPtr(b[0],b[1]);
   uint64_t end;
   
-#if __GNUC__ > 4  
-  // error on overflow; builtins available for GCC >= 5
-  if (__builtin_sub_overflow_p (start,offset,(uint64_t) 0))
-    stop("Underflow in address computation.");
-#endif
-  end = start - offset;
-  return(unpackPtrV((void *)end));
+#if (__GNUC__ > 4) && (__GNUC__ < 7)
+  bool err;
+  if (sizeof(uint64_t) == sizeof(unsigned int)) err = __builtin_usub_overflow (start,offset, &end)
+  else if (sizeof(uint64_t) == sizeof(unsigned long int)) err = __builtin_usubl_overflow (start,offset, &end)
+  else if (sizeof(uint64_t) == sizeof(unsigned long long int)) err = __builtin_usubll_overflow (start,offset, &end)
+  else err = __builtin_sub_overflow (start,offset, &end)
+  if (err) stop("Overflow in address computation.");
+#elif __GNUC__ > 6  
+  // error on overflow; builtins available for GCC >= 7
+  if (__builtin_sub_overflow_p (start,offset, (uint64_t) 0))
+    stop("Overflow in address computation.");
+  else
+    end = start + offset;
+#else
+  end = start + offset;
+#endif 
+return(unpackPtrV((void *)end));
 }
 
 //[[Rcpp::export]]
@@ -253,11 +273,21 @@ IntegerVector CWmisc_addPtr(IntegerVector a, IntegerVector b){
   uint64_t offset = (uint64_t)packPtr(b[0],b[1]);
   uint64_t end;
   
-#if __GNUC__ > 4  
-  // error on overflow; builtins available for GCC >= 5
-  if (__builtin_add_overflow_p (start,offset,(uint64_t) 0))
+#if (__GNUC__ > 4) && (__GNUC__ < 7)
+  bool err;
+  if (sizeof(uint64_t) == sizeof(unsigned int)) err = __builtin_uadd_overflow (start,offset, &end)
+  else if (sizeof(uint64_t) == sizeof(unsigned long int)) err = __builtin_uaddl_overflow (start,offset, &end)
+  else if (sizeof(uint64_t) == sizeof(unsigned long long int)) err = __builtin_uaddll_overflow (start,offset, &end)
+  else err = __builtin_add_overflow (start,offset, &end)
+  if (err) stop("Overflow in address computation.");
+#elif __GNUC__ > 6  
+  // error on overflow; builtins available for GCC >= 7
+  if (__builtin_add_overflow_p (start,offset, (uint64_t) 0))
     stop("Overflow in address computation.");
-#endif
+  else
+    end = start + offset;
+#else
   end = start + offset;
+#endif 
   return(unpackPtrV((void *)end));
 }

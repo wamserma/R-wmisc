@@ -1,11 +1,11 @@
 Package: Wmisc
 Type: Package
-Title: Markus Wamser's Miscellaneous Helper Functions 
+Title: Wamser Misc: reading files by tokens, stateful computations, utility functions  
 Version: 0.3.1
 Date: 2016-12-07
 Authors@R: person("Markus S.", "Wamser", email = "r-wmisc@devel.wamser.eu",
   role = c("aut", "cre"))
-Description: A collection of helper functions that were primarily written for personal use, but might be useful for a wider audience.
+Description: A tokenizer to read a text file token by token with a very lightweight API, a framework for stateful computations with finite state machines and a few string utility functions. 
 LinkingTo:
     Rcpp
 Imports:
@@ -20,7 +20,6 @@ RoxygenNote: 5.0.1
 Suggests: knitr,
     microbenchmark,
     rmarkdown,
-    roxygen2,
     testthat,
     covr,
     DiagrammeR

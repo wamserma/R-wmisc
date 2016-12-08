@@ -14,11 +14,13 @@ There were 2 NOTEs:
     
     New submission  
     
-    Possibly mis-spelled words in DESCRIPTION:  
-      Markus (3:8)  
-      Wamser's (3:15)  
+    Possibly mis-spelled words in DESCRIPTION:
+     API (9:85)
+     Wamser (3:8)
+     stateful (3:46, 9:106)
+     tokenizer (9:16)
   
-  > This is a first time submission of the package. My name is written correctly.  
+  > This is a first time submission of the package. Spelling of these words is ok.  
 
 * checking installed package size ... NOTE  
   installed size is  6.5Mb  

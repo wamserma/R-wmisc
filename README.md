@@ -1,4 +1,5 @@
-[![Build Status](https://img.shields.io/travis/wamserma/R-wmisc/master.png)](https://travis-ci.org/wamserma/R-wmisc/) [![Windows Build Status](https://img.shields.io/appveyor/ci/wamserma/R-wmisc/master.svg)](https://ci.appveyor.com/project/wamserma/R-wmisc) [![Coverage Status](https://img.shields.io/codecov/c/github/wamserma/R-wmisc/master.svg)](https://codecov.io/github/wamserma/R-wmisc?branch=master)
+[![Build Status](https://img.shields.io/travis/wamserma/R-wmisc/master.png)](https://travis-ci.org/wamserma/R-wmisc/) [![Windows Build Status](https://img.shields.io/appveyor/ci/wamserma/R-wmisc/master.svg)](https://ci.appveyor.com/project/wamserma/R-wmisc) [![Coverage Status](https://img.shields.io/codecov/c/github/wamserma/R-wmisc/master.svg)](https://codecov.io/github/wamserma/R-wmisc?branch=master) [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/Wmisc)](http://cran.r-project.org/package=Wmisc)
+
 
 
 # Wmisc - because everyone should have his own misc package for R
@@ -15,6 +16,11 @@ This is a collection of helper functions I wrote for myself.
 
 ## I want it!
 
+```r
+install.packages(c("Wmisc")) 
+```
+
+if you prefer the latest stable version from GitHub:
 ```r
 install.packages(c("devtools")) # if you haven't done that before
 devtools::install_github("wamserma/R-wmisc")

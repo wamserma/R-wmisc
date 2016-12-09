@@ -14,12 +14,13 @@ There were 2 NOTEs:
     Maintainer: 'Markus S. Wamser <r-wmisc@devel.wamser.eu>'  
     
     New submission  
-    
+
     Possibly mis-spelled words in DESCRIPTION:
      API (9:85)
+     Stateful (3:46)
      Wamser (3:8)
-     stateful (3:46, 9:106)
-     tokenizer (9:16)
+     stateful (9:106)
+     tokenizer (9:16) 
   
   > This is a first time submission of the package. Spelling of these words is ok.  
 

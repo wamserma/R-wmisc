@@ -66,7 +66,7 @@
 #' 
 #' For efficiency reasons, \code{Tokenizer} will not re-stat the file once it is successfully opened. This means that especially a change of the file size can lead to unpredictable behaviour.
 #' 
-#' The sequence \code{\\cr\\lf} will be interpreted as two distinct tokens, if \code{skipEmptyTokens=FALSE}. The defualt setting is \code{TRUE}
+#' The sequence \code{\\cr\\lf} will be interpreted as two distinct tokens, if \code{skipEmptyTokens=FALSE}. The default setting is \code{TRUE}
 #' @rdname Tokenizer
 #' @format An \code{\link{R6Class}} generator object. 
 #' @export

@@ -64,6 +64,7 @@ For efficiency reasons, \code{Tokenizer} will not re-stat the file once it is su
 
 The sequence \code{\\cr\\lf} will be interpreted as two distinct tokens, if \code{skipEmptyTokens=FALSE}. The default setting is \code{TRUE}
 }
+
 \examples{
 \dontrun{
 tok<-Tokenizer$new("tokenfile.txt")
@@ -79,4 +80,3 @@ tok$close()                                        # good style, but not require
 }
 }
 \keyword{datasets}
-

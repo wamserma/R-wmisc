@@ -54,6 +54,7 @@ Footnotes:
   \item{\code{visualize()}}{Displays the state graph of the \code{Automat} using the \code{DiagrammeR} package.}
 }
 }
+
 \examples{
   A <- Automat$new()
   f <- function(s,i,t){paste0("You caught ",i,"!")}
@@ -71,4 +72,3 @@ Footnotes:
   A$visualize()}
 }
 \keyword{datasets}
-

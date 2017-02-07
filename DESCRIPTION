@@ -16,11 +16,11 @@ URL: https://github.com/wamserma/R-Wmisc/
 BugReports: https://github.com/wamserma/R-Wmisc/issues
 License: GPL (>= 2)
 LazyData: TRUE
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.0
 Suggests: knitr,
     microbenchmark,
     rmarkdown,
     testthat,
     covr,
-    DiagrammeR
+    DiagrammeR (>= 0.9.0)
 VignetteBuilder: knitr

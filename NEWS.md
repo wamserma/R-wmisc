@@ -1,6 +1,7 @@
 # Wmisc Version History
 
 ## Version 0.3.2
+- FIX: compatibility with DiagrammeR >=0.9.0 
 
 ## Version 0.3.1
 - Enhancement: Tokenizer's reading position can now be reset.

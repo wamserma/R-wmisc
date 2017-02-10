@@ -200,3 +200,16 @@ test_that("Pokexample works",{
   expect_equal(A$read("Pikachu"),"You caught the flu!")
   expect_equal(A$read("Bulbasaur"),"You caught Bulbasaur!")
 })
+
+test_that("edge_present_lab helper works",{
+  if (requireNamespace("DiagrammeR", quietly = TRUE)) {
+    ndf<-DiagrammeR::create_node_df(3,label=c("foo","bar","lonely"))
+    g<-DiagrammeR::create_graph(ndf)
+    g<-DiagrammeR::add_edge(g,"foo","bar",rel="together",use_labels = T)
+    expect_false(edge_present_lab(g,"foo","lonely"))
+    expect_true(edge_present_lab(g,"foo","bar"))
+    expect_false(edge_present_lab(g,"foo","gnu"))
+    expect_false(edge_present_lab(g,"gnat","bar"))
+    expect_false(edge_present_lab(g,"gnat","gnu"))
+  }
+})

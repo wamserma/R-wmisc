@@ -20,6 +20,7 @@
 #'   \item{\code{setState(state)}}{Set the \code{Automat} to a certain state (e.g. to the initial state).}
 #'   \item{\code{read(input)}}{Tell the \code{Automat} to read/consume the given \code{input} and act upon it.}
 #'   \item{\code{print(long=F)}}{Prints a summary of the \code{Automat}. When \code{long} is \code{TRUE}, a full list of states and transitions is returned.}
+#'   \item{\code{getGraph()}}{Produces a renderable representation of the state graph of the \code{Automat} using the \code{DiagrammeR} package.}
 #'   \item{\code{visualize()}}{Displays the state graph of the \code{Automat} using the \code{DiagrammeR} package.}
 #' }
 #'
@@ -185,7 +186,7 @@ Automat <- R6::R6Class("Automat",
                           }
                         }
                     },
-                    visualize = function() {
+                    renderGraph = function() {
                       if (requireNamespace("DiagrammeR", quietly = TRUE)) {
                         ttable<-private$ttable()
                         n <- unique(c(ttable[,1],ttable[,4]))
@@ -213,7 +214,7 @@ Automat <- R6::R6Class("Automat",
                             shape = "circle"
                         )}
                         if (!is.na(private$current)){
-                          nodes <- rbind(nodes,DiagrammeR::create_node_df(
+                          nodes <- DiagrammeR::combine_ndfs(nodes,DiagrammeR::create_node_df(
                             n = length(private$current),
                             label = private$current,
                             style = "filled",
@@ -236,20 +237,20 @@ Automat <- R6::R6Class("Automat",
                           directs <- matrix(ttable[directs,c(1,4,2,3)],ncol=4)
                           for (i in 1:nrow(directs)){
                             if (!edge_present_lab(g,directs[i,1],directs[i,2])){
-                            g <-
-                              g %>%
-                              DiagrammeR::add_edge(
+                            g <- DiagrammeR::add_edge(g,
                                 from = directs[i,1],
                                 to = directs[i,2],
                                 rel = paste0(directs[i,3],
                                              directs[i,4]),
-                                use_labels = TRUE) %>%
-                              DiagrammeR::select_last_edge() %>%
-                              DiagrammeR::set_edge_attrs_ws("color", "#000000") %>%
-                              DiagrammeR::set_edge_attrs_ws("fontcolor", "#000000") %>%
-                              DiagrammeR::set_edge_attrs_ws("input", directs[i,3]) %>%
-                              DiagrammeR::set_edge_attrs_ws("hook", directs[i,4]) %>%
-                              DiagrammeR::clear_selection()
+                                use_labels = TRUE) 
+                            g <- DiagrammeR::select_last_edge(g)
+                            g <- DiagrammeR::set_edge_attrs_ws(g,"color", "#000000")
+                            g <- DiagrammeR::set_edge_attrs_ws(g,"fontcolor", "#000000")
+                            g <- DiagrammeR::set_edge_attrs_ws(g,"input", directs[i,3])
+                            g <- DiagrammeR::set_edge_attrs_ws(g,"hook", directs[i,4])
+                            g <- DiagrammeR::set_edge_attrs_ws(g,"label", paste0(directs[i,3],
+                                                                            directs[i,4]))
+                            g <- DiagrammeR::clear_selection(g)
                             }
                           }
                         }
@@ -259,20 +260,20 @@ Automat <- R6::R6Class("Automat",
                           byany <- matrix(ttable[byany,c(1,4,2,3)],ncol=4)
                           for (i in 1:nrow(byany)){
                             if (!edge_present_lab(g,byany[i,1],byany[i,2])){
-                              g <-
-                                g %>%
-                                DiagrammeR::add_edge(
+                              g <- DiagrammeR::add_edge(g,
                                   from = byany[i,1],
                                   to = byany[i,2],
                                   rel = paste0(byany[i,3],
                                                byany[i,4]),
-                                  use_labels = TRUE) %>%
-                                DiagrammeR::select_last_edge() %>%
-                                DiagrammeR::set_edge_attrs_ws("color", "#444444") %>%
-                                DiagrammeR::set_edge_attrs_ws("fontcolor", "#444444") %>%
-                                DiagrammeR::set_edge_attrs_ws("input", byany[i,3]) %>%
-                                DiagrammeR::set_edge_attrs_ws("hook", byany[i,4]) %>%
-                                DiagrammeR::clear_selection()
+                                  use_labels = TRUE)
+                              g <- DiagrammeR::select_last_edge(g)
+                              g <- DiagrammeR::set_edge_attrs_ws(g,"color", "#444444")
+                              g <- DiagrammeR::set_edge_attrs_ws(g,"fontcolor", "#444444")
+                              g <- DiagrammeR::set_edge_attrs_ws(g,"input", byany[i,3])
+                              g <- DiagrammeR::set_edge_attrs_ws(g,"hook", byany[i,4])
+                              g <- DiagrammeR::set_edge_attrs_ws(g,"label", paste0(byany[i,3],
+                                                                              byany[i,4]))
+                              g <- DiagrammeR::clear_selection(g)
                             }
                           }
                         }
@@ -282,20 +283,20 @@ Automat <- R6::R6Class("Automat",
                           for (i in 1:nrow(fromany)){
                             for (j in n){
                               if (!edge_present_lab(g,j,fromany[i,2])){
-                                g <-
-                                  g %>%
-                                  DiagrammeR::add_edge(
+                                g <- DiagrammeR::add_edge(g,
                                     from = j,
                                     to = fromany[i,2],
                                     rel = paste0(fromany[i,3],
                                                  fromany[i,4]),
-                                    use_labels = TRUE) %>%
-                                  DiagrammeR::select_last_edge() %>%
-                                  DiagrammeR::set_edge_attrs_ws("color", "#888888") %>%
-                                  DiagrammeR::set_edge_attrs_ws("fontcolor", "#888888") %>%
-                                  DiagrammeR::set_edge_attrs_ws("input", fromany[i,3]) %>%
-                                  DiagrammeR::set_edge_attrs_ws("hook", fromany[i,4]) %>%
-                                  DiagrammeR::clear_selection()
+                                    use_labels = TRUE) 
+                                g <- DiagrammeR::select_last_edge(g) 
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"color", "#888888") 
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"fontcolor", "#888888") 
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"input", fromany[i,3]) 
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"hook", fromany[i,4]) 
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"label", paste0(fromany[i,3],
+                                                                                fromany[i,4])) 
+                                g <- DiagrammeR::clear_selection(g)
                               }
                             }
                           }
@@ -306,26 +307,35 @@ Automat <- R6::R6Class("Automat",
                           for (i in 1:nrow(default)){
                             for (j in n){
                               if (!edge_present_lab(g,j,default[i,2])){
-                                g <-
-                                  g %>%
-                                  DiagrammeR::add_edge(
+                                g <- DiagrammeR::add_edge(g,
                                     from = j,
                                     to = default[i,2],
                                     rel = paste0(default[i,3],
                                                  default[i,4]),
-                                    use_labels = TRUE) %>%
-                                  DiagrammeR::select_last_edge() %>%
-                                  DiagrammeR::set_edge_attrs_ws("color", "#BBBBBB") %>%
-                                  DiagrammeR::set_edge_attrs_ws("fontcolor", "#BBBBBB") %>%
-                                  DiagrammeR::set_edge_attrs_ws("input", default[i,3]) %>%
-                                  DiagrammeR::set_edge_attrs_ws("hook", default[i,4]) %>%
-                                  DiagrammeR::clear_selection()
+                                    use_labels = TRUE) 
+                                g <- DiagrammeR::select_last_edge(g) 
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"color", "#BBBBBB") 
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"fontcolor", "#BBBBBB") 
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"input", default[i,3]) 
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"hook", default[i,4]) 
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"label", paste0(default[i,3],
+                                                                                default[i,4])) 
+                                g <- DiagrammeR::clear_selection(g)
                               }
                             }
                           }
                         }
-                        g
-                        #DiagrammeR::render_graph(g,layout="neato")
+                        g <-
+                          DiagrammeR::set_global_graph_attrs(g,"layout","dot",attr_type = "graph")
+                        return(g)
+                      } else {
+                        warning("Sorry Dave, I can't do that.\nPlease install DiagrammeR") # nocov
+                      }
+                    },
+                    visualize = function(g=NULL) {
+                      if (requireNamespace("DiagrammeR", quietly = TRUE)) {
+                        if (is.null(g)) g<-self$renderGraph()
+                        DiagrammeR::render_graph(g)
                       } else {
                         warning("Sorry Dave, I can't do that.\nPlease install DiagrammeR") # nocov
                       }
@@ -376,4 +386,9 @@ edge_present_lab<-function(g,from,to){
   } else {
     return(DiagrammeR::edge_present(g,n.from,n.to))
   }
+}
+
+#@ internal
+requireGraphing<-function(){
+  return(requireNamespace("DiagrammeR", quietly = TRUE))
 }

@@ -51,6 +51,7 @@ Footnotes:
   \item{\code{setState(state)}}{Set the \code{Automat} to a certain state (e.g. to the initial state).}
   \item{\code{read(input)}}{Tell the \code{Automat} to read/consume the given \code{input} and act upon it.}
   \item{\code{print(long=F)}}{Prints a summary of the \code{Automat}. When \code{long} is \code{TRUE}, a full list of states and transitions is returned.}
+  \item{\code{getGraph()}}{Produces a renderable representation of the state graph of the \code{Automat} using the \code{DiagrammeR} package.}
   \item{\code{visualize()}}{Displays the state graph of the \code{Automat} using the \code{DiagrammeR} package.}
 }
 }

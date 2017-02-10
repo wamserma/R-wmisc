@@ -18,6 +18,12 @@ createBasicAutomat<-function(){
   return(A)
 }
 
+cleanDynamicGraphData<-function(g){
+  g$graph_log<-NULL
+  g$graph_info<-NULL
+  return(g)
+}
+
 test_that("printing and running a simple automat works",{
   A<-createBasicAutomat()
   expect_output(A$print(),"An Automat with 3 states.\nCurrent state is: ready")
@@ -125,10 +131,18 @@ test_that("long format printing works",{
   expect_output_file(A$print(long=T),"automat-longprint-4.txt",update=F)
 })
 
+test_that("visualization in general works",{
+  if (requireNamespace("DiagrammeR", quietly = TRUE)) {
+    A<-createBasicAutomat()
+    g<-A$renderGraph()
+    expect_equal(A$visualize(),A$visualize(g))
+  }
+})
+
 test_that("visualization of empty automat works",{
   if (requireNamespace("DiagrammeR", quietly = TRUE)) {
     A<-Automat$new()
-    expect_equal_to_reference(A$visualize(),"automat-visual-0.rds")
+    expect_equal_to_reference(cleanDynamicGraphData(A$renderGraph()),"automat-visual-0.rds")
   }
 })
 
@@ -136,7 +150,7 @@ test_that("visualization without set state works",{
   if (requireNamespace("DiagrammeR", quietly = TRUE)) {
     A<-Automat$new()
     A$addTransition("ready","ok","ready")
-    expect_equal_to_reference(A$visualize(),"automat-visual-nostate.rds")
+    expect_equal_to_reference(cleanDynamicGraphData(A$renderGraph()),"automat-visual-nostate.rds")
   }
 })
 
@@ -145,11 +159,10 @@ test_that("visualization with implicit state works",{
     A<-Automat$new()
     A$addTransition("ready","ok","ready")
     A$setState("foo")
-    expect_equal_to_reference(A$visualize(),"automat-visual-implicit.rds")
+    expect_equal_to_reference(cleanDynamicGraphData(A$renderGraph()),"automat-visual-implicit.rds")
   }
 })
 
-  
 test_that("visualization works",{
   if (requireNamespace("DiagrammeR", quietly = TRUE)) {
     A<-createBasicAutomat()
@@ -160,20 +173,19 @@ test_that("visualization works",{
     A$addTransition(NA,NA,"gnu",FUN=function(a,b,c){
       paste0("automat went from (",a,") to (",c,") at input (",b,")")
     })
-    expect_equal_to_reference(A$visualize(),"automat-visual-1.rds")
+    expect_equal_to_reference(cleanDynamicGraphData(A$renderGraph()),"automat-visual-1.rds")
     A$addTransition(NA,NA,NA,FUN=function(a,b,c){
       paste0("automat went from (",a,") to (",c,") at input (",b,")")
     })
-    expect_equal_to_reference(A$visualize(),"automat-visual-2.rds")
+    expect_equal_to_reference(cleanDynamicGraphData(A$renderGraph()),"automat-visual-2.rds")
     A$setPredicate("gnat",function() "reset")
-    expect_equal_to_reference(A$visualize(),"automat-visual-3.rds")
+    expect_equal_to_reference(cleanDynamicGraphData(A$renderGraph()),"automat-visual-3.rds")
     A$addTransition("gnat",NA,"gnu",FUN=function(a,b,c){
       paste0("automat went from (",a,") to (",c,") at input (",b,")") # this transition will never be matched
     })
-  expect_equal_to_reference(A$visualize(),"automat-visual-4.rds")
+    expect_equal_to_reference(cleanDynamicGraphData(A$renderGraph()),"automat-visual-4.rds")
   }
 })
-
 
 test_that("Pokexample works",{
   A<-Automat$new()
@@ -189,4 +201,15 @@ test_that("Pokexample works",{
   expect_equal(A$read("Bulbasaur"),"You caught Bulbasaur!")
 })
 
-# test visualization #nolint
+test_that("edge_present_lab helper works",{
+  if (requireNamespace("DiagrammeR", quietly = TRUE)) {
+    ndf<-DiagrammeR::create_node_df(3,label=c("foo","bar","lonely"))
+    g<-DiagrammeR::create_graph(ndf)
+    g<-DiagrammeR::add_edge(g,"foo","bar",rel="together",use_labels = T)
+    expect_false(edge_present_lab(g,"foo","lonely"))
+    expect_true(edge_present_lab(g,"foo","bar"))
+    expect_false(edge_present_lab(g,"foo","gnu"))
+    expect_false(edge_present_lab(g,"gnat","bar"))
+    expect_false(edge_present_lab(g,"gnat","gnu"))
+  }
+})

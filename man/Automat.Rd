@@ -36,7 +36,7 @@ For \code{new()} A new Automat object, nothing for \code{setState()}. The return
 Sometimes computation has to be stateful, such as in parsing files etc. The aim of the \code{Automat} class is to abstract this away from the user.
 }
 \details{
-An \code{Automat} is a finite state machine (or DFA[1]). For usage it is first set up with a set of transitions. Then it is fed with inputs, triggering internal transitions and returning outputs as determined by the current internal state and the input. Each transition can be augmented by a user-supplied function, that can compute return values or trigger side effects. Support for 'from-any' and 'by-any' transitions is also provided. Explicitly set transitions take precedence over these wildcard transitions, with by-any-transitiond taking precedence over from-any-transitions. Finally each state can be augmented with a predicate function that transforms the actual input into a new input that is actually used for selecting the proper transition. Each transition can also be annotated with a function that may generate additional outputs or side effects like maintaining stacks or other memory to implement more powerful classes of automata.
+An \code{Automat} is a finite state machine (or DFA[1]). For usage it is first set up with a set of transitions. Then it is fed with inputs, triggering internal transitions and returning outputs as determined by the current internal state and the input. Each transition can be augmented by a user-supplied function, that can compute return values or trigger side effects. Support for 'from-any' and 'by-any' transitions is also provided. Explicitly set transitions take precedence over these wildcard transitions, with by-any-transitions taking precedence over from-any-transitions. Finally each state can be augmented with a predicate function that transforms the actual input into a new input that is actually used for selecting the proper transition. Each transition can also be annotated with a function that may generate additional outputs or side effects like maintaining stacks or other memory to implement more powerful classes of automata.
 
 Footnotes:
 [1]\url{https://en.wikipedia.org/wiki/Deterministic_finite_automaton}
@@ -51,9 +51,11 @@ Footnotes:
   \item{\code{setState(state)}}{Set the \code{Automat} to a certain state (e.g. to the initial state).}
   \item{\code{read(input)}}{Tell the \code{Automat} to read/consume the given \code{input} and act upon it.}
   \item{\code{print(long=F)}}{Prints a summary of the \code{Automat}. When \code{long} is \code{TRUE}, a full list of states and transitions is returned.}
+  \item{\code{getGraph()}}{Produces a renderable representation of the state graph of the \code{Automat} using the \code{DiagrammeR} package.}
   \item{\code{visualize()}}{Displays the state graph of the \code{Automat} using the \code{DiagrammeR} package.}
 }
 }
+
 \examples{
   A <- Automat$new()
   f <- function(s,i,t){paste0("You caught ",i,"!")}
@@ -71,4 +73,3 @@ Footnotes:
   A$visualize()}
 }
 \keyword{datasets}
-

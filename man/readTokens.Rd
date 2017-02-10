@@ -39,4 +39,3 @@ readTokens("myfile.txt")                   # same as above, syntactic sugar
 readlines("myfile.txt")
 }
 }
-

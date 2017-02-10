@@ -2,7 +2,7 @@
 #'
 #' @description Sometimes computation has to be stateful, such as in parsing files etc. The aim of the \code{Automat} class is to abstract this away from the user. 
 #' 
-#' @details An \code{Automat} is a finite state machine (or DFA[1]). For usage it is first set up with a set of transitions. Then it is fed with inputs, triggering internal transitions and returning outputs as determined by the current internal state and the input. Each transition can be augmented by a user-supplied function, that can compute return values or trigger side effects. Support for 'from-any' and 'by-any' transitions is also provided. Explicitly set transitions take precedence over these wildcard transitions, with by-any-transitiond taking precedence over from-any-transitions. Finally each state can be augmented with a predicate function that transforms the actual input into a new input that is actually used for selecting the proper transition. Each transition can also be annotated with a function that may generate additional outputs or side effects like maintaining stacks or other memory to implement more powerful classes of automata.
+#' @details An \code{Automat} is a finite state machine (or DFA[1]). For usage it is first set up with a set of transitions. Then it is fed with inputs, triggering internal transitions and returning outputs as determined by the current internal state and the input. Each transition can be augmented by a user-supplied function, that can compute return values or trigger side effects. Support for 'from-any' and 'by-any' transitions is also provided. Explicitly set transitions take precedence over these wildcard transitions, with by-any-transitions taking precedence over from-any-transitions. Finally each state can be augmented with a predicate function that transforms the actual input into a new input that is actually used for selecting the proper transition. Each transition can also be annotated with a function that may generate additional outputs or side effects like maintaining stacks or other memory to implement more powerful classes of automata.
 #' 
 #' Footnotes:
 #' [1]\url{https://en.wikipedia.org/wiki/Deterministic_finite_automaton}
@@ -20,6 +20,7 @@
 #'   \item{\code{setState(state)}}{Set the \code{Automat} to a certain state (e.g. to the initial state).}
 #'   \item{\code{read(input)}}{Tell the \code{Automat} to read/consume the given \code{input} and act upon it.}
 #'   \item{\code{print(long=F)}}{Prints a summary of the \code{Automat}. When \code{long} is \code{TRUE}, a full list of states and transitions is returned.}
+#'   \item{\code{getGraph()}}{Produces a renderable representation of the state graph of the \code{Automat} using the \code{DiagrammeR} package.}
 #'   \item{\code{visualize()}}{Displays the state graph of the \code{Automat} using the \code{DiagrammeR} package.}
 #' }
 #'
@@ -185,32 +186,47 @@ Automat <- R6::R6Class("Automat",
                           }
                         }
                     },
-                    visualize = function() {
+                    renderGraph = function() {
                       if (requireNamespace("DiagrammeR", quietly = TRUE)) {
                         ttable<-private$ttable()
                         n <- unique(c(ttable[,1],ttable[,4]))
                         n <- n[n!="*"]
-                        # get the nodes_df
+                        #get the nodes_df
                         if (!is.na(private$current)){
                           nn<-n[n!=private$current]
                         } else {
                           nn<-n
                         }
-                        nodes<-DiagrammeR::create_nodes(
-                          nodes = nn,
-                          label = TRUE,
-                          style = "filled",
-                          color = "royalblue2",
-                          shape = "circle"
-                        )
+                        if (length(nn)==0) {
+                          nodes<-data.frame(
+                            id=integer(0),
+                            label=character(0),
+                            style=character(0),
+                            color=character(0),
+                            shape=character(0),
+                            stringsAsFactors = F)
+                        } else {
+                          nodes<-DiagrammeR::create_node_df(
+                            n = length(nn),
+                            label = nn,
+                            style = "filled",
+                            color = "royalblue2",
+                            shape = "circle"
+                        )}
                         if (!is.na(private$current)){
-                          nodes <- rbind(nodes,DiagrammeR::create_nodes(
-                            nodes = private$current,
-                            label = TRUE,
+                          nodes <- DiagrammeR::combine_ndfs(nodes,DiagrammeR::create_node_df(
+                            n = length(private$current),
+                            label = private$current,
                             style = "filled",
                             color = "springgreen3",
                             shape = "circle"
                           ))
+                        }
+                        # create the graph so far
+                        if (dim(nodes)[1]>0) {
+                          g <- DiagrammeR::create_graph(nodes_df = nodes)
+                        } else {
+                          g <- DiagrammeR::create_graph()
                         }
                         # produce the edge_df
                         ttable[,3] <- sapply(ttable[,3],FUN=function(x){
@@ -219,32 +235,45 @@ Automat <- R6::R6Class("Automat",
                         directs <- (ttable[,1]!="*" & ttable[,2]!="*")
                         if (length(directs > 0) & any(directs)){
                           directs <- matrix(ttable[directs,c(1,4,2,3)],ncol=4)
-                          edges <- DiagrammeR::create_edges(from=directs[,1],
-                                                          to=directs[,2],
-                                                          label=mapply(FUN=function(a,b){
-                                                                         paste0(a,b)
-                                                                       },
-                                                                       directs[,3],
-                                                                       directs[,4]))
-                          # create the graph so far
-                          g <- DiagrammeR::create_graph(
-                            nodes_df = nodes,
-                            edges_df = edges
-                        )} else {
-                          g <- DiagrammeR::create_graph()
+                          for (i in 1:nrow(directs)){
+                            if (!edge_present_lab(g,directs[i,1],directs[i,2])){
+                            g <- DiagrammeR::add_edge(g,
+                                from = directs[i,1],
+                                to = directs[i,2],
+                                rel = paste0(directs[i,3],
+                                             directs[i,4]),
+                                use_labels = TRUE)
+                            g <- DiagrammeR::select_last_edge(g)
+                            g <- DiagrammeR::set_edge_attrs_ws(g,"color", "#000000")
+                            g <- DiagrammeR::set_edge_attrs_ws(g,"fontcolor", "#000000")
+                            g <- DiagrammeR::set_edge_attrs_ws(g,"input", directs[i,3])
+                            g <- DiagrammeR::set_edge_attrs_ws(g,"hook", directs[i,4])
+                            g <- DiagrammeR::set_edge_attrs_ws(g,"label", paste0(directs[i,3],
+                                                                            directs[i,4]))
+                            g <- DiagrammeR::clear_selection(g)
+                            }
+                          }
                         }
                         # now add wildcard edges
                         byany <- (ttable[,1]!="*" & ttable[,2]=="*")
                         if (length(byany > 0) & any(byany)){
                           byany <- matrix(ttable[byany,c(1,4,2,3)],ncol=4)
                           for (i in 1:nrow(byany)){
-                            if (!DiagrammeR::edge_present(g,byany[i,1],byany[i,2])){
-                              e<-DiagrammeR::create_edges(byany[i,1],
-                                                          byany[i,2],
-                                                          label=paste0(byany[i,3],byany[i,4]),
-                                                          color="#444444",
-                                                          fontcolor="#444444")
-                              g<-DiagrammeR::add_edge_df(g,e)
+                            if (!edge_present_lab(g,byany[i,1],byany[i,2])){
+                              g <- DiagrammeR::add_edge(g,
+                                  from = byany[i,1],
+                                  to = byany[i,2],
+                                  rel = paste0(byany[i,3],
+                                               byany[i,4]),
+                                  use_labels = TRUE)
+                              g <- DiagrammeR::select_last_edge(g)
+                              g <- DiagrammeR::set_edge_attrs_ws(g,"color", "#444444")
+                              g <- DiagrammeR::set_edge_attrs_ws(g,"fontcolor", "#444444")
+                              g <- DiagrammeR::set_edge_attrs_ws(g,"input", byany[i,3])
+                              g <- DiagrammeR::set_edge_attrs_ws(g,"hook", byany[i,4])
+                              g <- DiagrammeR::set_edge_attrs_ws(g,"label", paste0(byany[i,3],
+                                                                              byany[i,4]))
+                              g <- DiagrammeR::clear_selection(g)
                             }
                           }
                         }
@@ -253,15 +282,21 @@ Automat <- R6::R6Class("Automat",
                           fromany <- matrix(ttable[fromany,c(1,4,2,3)],ncol=4)
                           for (i in 1:nrow(fromany)){
                             for (j in n){
-                              if (!DiagrammeR::edge_present(g,j,fromany[i,2])){
-                                e<-DiagrammeR::create_edges(j,
-                                                            fromany[i,2],
-                                                            label=
-                                                              paste0(fromany[i,3],
-                                                                     fromany[i,4]),
-                                                            color="#888888",
-                                                            fontcolor="#888888")
-                                g<-DiagrammeR::add_edge_df(g,e)
+                              if (!edge_present_lab(g,j,fromany[i,2])){
+                                g <- DiagrammeR::add_edge(g,
+                                    from = j,
+                                    to = fromany[i,2],
+                                    rel = paste0(fromany[i,3],
+                                                 fromany[i,4]),
+                                    use_labels = TRUE)
+                                g <- DiagrammeR::select_last_edge(g)
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"color", "#888888")
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"fontcolor", "#888888")
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"input", fromany[i,3])
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"hook", fromany[i,4])
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"label", paste0(fromany[i,3],
+                                                                                fromany[i,4]))
+                                g <- DiagrammeR::clear_selection(g)
                               }
                             }
                           }
@@ -271,19 +306,36 @@ Automat <- R6::R6Class("Automat",
                         default <- matrix(ttable[default,c(1,4,2,3)],ncol=4)
                           for (i in 1:nrow(default)){
                             for (j in n){
-                              if (!DiagrammeR::edge_present(g,j,default[i,2])){
-                                e<-DiagrammeR::create_edges(j,
-                                                            default[i,2],
-                                                            label=paste0(default[i,3],
-                                                                         default[i,4]),
-                                                            color="#BBBBBB",
-                                                            fontcolor="#BBBBBB")
-                                g<-DiagrammeR::add_edge_df(g,e)
+                              if (!edge_present_lab(g,j,default[i,2])){
+                                g <- DiagrammeR::add_edge(g,
+                                    from = j,
+                                    to = default[i,2],
+                                    rel = paste0(default[i,3],
+                                                 default[i,4]),
+                                    use_labels = TRUE)
+                                g <- DiagrammeR::select_last_edge(g)
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"color", "#BBBBBB")
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"fontcolor", "#BBBBBB")
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"input", default[i,3])
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"hook", default[i,4])
+                                g <- DiagrammeR::set_edge_attrs_ws(g,"label", paste0(default[i,3],
+                                                                                default[i,4]))
+                                g <- DiagrammeR::clear_selection(g)
                               }
                             }
                           }
                         }
-                        DiagrammeR::render_graph(g,layout="neato")
+                        g <-
+                          DiagrammeR::set_global_graph_attrs(g,"layout","dot",attr_type = "graph")
+                        return(g)
+                      } else {
+                        warning("Sorry Dave, I can't do that.\nPlease install DiagrammeR") # nocov
+                      }
+                    },
+                    visualize = function(g=NULL) {
+                      if (requireNamespace("DiagrammeR", quietly = TRUE)) {
+                        if (is.null(g)) g<-self$renderGraph()
+                        DiagrammeR::render_graph(g)
                       } else {
                         warning("Sorry Dave, I can't do that.\nPlease install DiagrammeR") # nocov
                       }
@@ -322,3 +374,16 @@ Automat <- R6::R6Class("Automat",
                     }
                   ) # end private members
 )
+
+#@ internal
+edge_present_lab<-function(g,from,to){
+  cond1 <- paste0("label == \'",from,"\'")
+  cond2 <- paste0("label == \'",to,"\'")
+  n.from<-DiagrammeR::get_node_ids(g, conditions = cond1)
+  n.to<-DiagrammeR::get_node_ids(g, conditions = cond2)
+  if ( is.na(n.from) | is.na(n.to) ) {
+    return(FALSE)
+  } else {
+    return(DiagrammeR::edge_present(g,n.from,n.to))
+  }
+}

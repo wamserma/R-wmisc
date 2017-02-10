@@ -2,11 +2,11 @@
 % Please edit documentation in R/Strings.R
 \name{Strings}
 \alias{Strings}
-\alias{strDrop}
 \alias{strHead}
 \alias{strHeadLower}
 \alias{strTail}
 \alias{strTake}
+\alias{strDrop}
 \title{Head and Tail functions for Strings.}
 \usage{
 strHead(s)
@@ -43,6 +43,7 @@ A few convenient list operations, tailored to 8-bit-character strings.
 
 While originally also implemented for performance reasons, the built-in \code{substr} function is usually faster due to the Call-overhead. At least for R 3.x onward the built-in functions should be preferred when performance is an issue. See the vignette for details.
 }
+
 \examples{
 strHead("Gnu")
 strHeadLower("Gnu")
@@ -50,4 +51,3 @@ strTail("Gnu")
 strTake("Gnus and Gnats",3)
 strDrop("Gnus and Gnats",9)
 }
-

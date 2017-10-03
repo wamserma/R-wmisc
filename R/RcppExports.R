@@ -2,46 +2,46 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 strHead <- function(s) {
-    .Call('Wmisc_strHead', PACKAGE = 'Wmisc', s)
+    .Call('_Wmisc_strHead', PACKAGE = 'Wmisc', s)
 }
 
 strHeadLower <- function(s) {
-    .Call('Wmisc_strHeadLower', PACKAGE = 'Wmisc', s)
+    .Call('_Wmisc_strHeadLower', PACKAGE = 'Wmisc', s)
 }
 
 strTail <- function(s) {
-    .Call('Wmisc_strTail', PACKAGE = 'Wmisc', s)
+    .Call('_Wmisc_strTail', PACKAGE = 'Wmisc', s)
 }
 
 strTake <- function(s, n) {
-    .Call('Wmisc_strTake', PACKAGE = 'Wmisc', s, n)
+    .Call('_Wmisc_strTake', PACKAGE = 'Wmisc', s, n)
 }
 
 strDrop <- function(s, n) {
-    .Call('Wmisc_strDrop', PACKAGE = 'Wmisc', s, n)
+    .Call('_Wmisc_strDrop', PACKAGE = 'Wmisc', s, n)
 }
 
 CWmisc_mmap <- function(path) {
-    .Call('Wmisc_CWmisc_mmap', PACKAGE = 'Wmisc', path)
+    .Call('_Wmisc_CWmisc_mmap', PACKAGE = 'Wmisc', path)
 }
 
 CWmisc_munmap <- function(fdVec) {
-    invisible(.Call('Wmisc_CWmisc_munmap', PACKAGE = 'Wmisc', fdVec))
+    invisible(.Call('_Wmisc_CWmisc_munmap', PACKAGE = 'Wmisc', fdVec))
 }
 
 CWmisc_nextToken <- function(currentPtr, delims) {
-    .Call('Wmisc_CWmisc_nextToken', PACKAGE = 'Wmisc', currentPtr, delims)
+    .Call('_Wmisc_CWmisc_nextToken', PACKAGE = 'Wmisc', currentPtr, delims)
 }
 
 CWmisc_validPtr <- function(base, target, offset) {
-    .Call('Wmisc_CWmisc_validPtr', PACKAGE = 'Wmisc', base, target, offset)
+    .Call('_Wmisc_CWmisc_validPtr', PACKAGE = 'Wmisc', base, target, offset)
 }
 
 CWmisc_subPtr <- function(a, b) {
-    .Call('Wmisc_CWmisc_subPtr', PACKAGE = 'Wmisc', a, b)
+    .Call('_Wmisc_CWmisc_subPtr', PACKAGE = 'Wmisc', a, b)
 }
 
 CWmisc_addPtr <- function(a, b) {
-    .Call('Wmisc_CWmisc_addPtr', PACKAGE = 'Wmisc', a, b)
+    .Call('_Wmisc_CWmisc_addPtr', PACKAGE = 'Wmisc', a, b)
 }
 

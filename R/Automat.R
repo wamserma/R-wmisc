@@ -243,7 +243,7 @@ Automat <- R6::R6Class("Automat",
                                 rel = paste0(directs[i,3],
                                              directs[i,4]),
                                 use_labels = TRUE)
-                            g <- DiagrammeR::select_last_edge(g)
+                            g <- DiagrammeR::select_last_edges_created(g)
                             g <- DiagrammeR::set_edge_attrs_ws(g,"color", "#000000")
                             g <- DiagrammeR::set_edge_attrs_ws(g,"fontcolor", "#000000")
                             g <- DiagrammeR::set_edge_attrs_ws(g,"input", directs[i,3])
@@ -266,7 +266,7 @@ Automat <- R6::R6Class("Automat",
                                   rel = paste0(byany[i,3],
                                                byany[i,4]),
                                   use_labels = TRUE)
-                              g <- DiagrammeR::select_last_edge(g)
+                              g <- DiagrammeR::select_last_edges_created(g)
                               g <- DiagrammeR::set_edge_attrs_ws(g,"color", "#444444")
                               g <- DiagrammeR::set_edge_attrs_ws(g,"fontcolor", "#444444")
                               g <- DiagrammeR::set_edge_attrs_ws(g,"input", byany[i,3])
@@ -289,7 +289,7 @@ Automat <- R6::R6Class("Automat",
                                     rel = paste0(fromany[i,3],
                                                  fromany[i,4]),
                                     use_labels = TRUE)
-                                g <- DiagrammeR::select_last_edge(g)
+                                g <- DiagrammeR::select_last_edges_created(g)
                                 g <- DiagrammeR::set_edge_attrs_ws(g,"color", "#888888")
                                 g <- DiagrammeR::set_edge_attrs_ws(g,"fontcolor", "#888888")
                                 g <- DiagrammeR::set_edge_attrs_ws(g,"input", fromany[i,3])
@@ -313,7 +313,7 @@ Automat <- R6::R6Class("Automat",
                                     rel = paste0(default[i,3],
                                                  default[i,4]),
                                     use_labels = TRUE)
-                                g <- DiagrammeR::select_last_edge(g)
+                                g <- DiagrammeR::select_last_edges_created(g)
                                 g <- DiagrammeR::set_edge_attrs_ws(g,"color", "#BBBBBB")
                                 g <- DiagrammeR::set_edge_attrs_ws(g,"fontcolor", "#BBBBBB")
                                 g <- DiagrammeR::set_edge_attrs_ws(g,"input", default[i,3])
@@ -377,10 +377,10 @@ Automat <- R6::R6Class("Automat",
 
 #@ internal
 edge_present_lab<-function(g,from,to){
-  cond1 <- paste0("label == \'",from,"\'")
-  cond2 <- paste0("label == \'",to,"\'")
-  n.from<-DiagrammeR::get_node_ids(g, conditions = cond1)
-  n.to<-DiagrammeR::get_node_ids(g, conditions = cond2)
+  label <- NULL # DiagrammeR::get_node_ids expects quosures but this generates a warning
+  # that 'label' does not have a visible binding
+  n.from<-DiagrammeR::get_node_ids(g, conditions = label == from)
+  n.to<-DiagrammeR::get_node_ids(g, conditions = label == to)
   if ( is.na(n.from) | is.na(n.to) ) {
     return(FALSE)
   } else {

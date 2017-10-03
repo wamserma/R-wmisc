@@ -1,5 +1,8 @@
 # Wmisc Version History
 
+## Version 0.3.3
+- FIX: compatibility with DiagrammeR >=0.9.2 
+
 ## Version 0.3.2
 - FIX: compatibility with DiagrammeR >=0.9.0 
 

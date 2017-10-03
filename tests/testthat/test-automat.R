@@ -21,6 +21,9 @@ createBasicAutomat<-function(){
 cleanDynamicGraphData<-function(g){
   g$graph_log<-NULL
   g$graph_info<-NULL
+  g$graph_actions<-NULL
+  g$cache<-NULL
+  g$edges_df<-g$edges_df[,-5] # drop col "colnames(extras_tbl)[i]"
   return(g)
 }
 

@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // strHead
 char strHead(std::string s);
-RcppExport SEXP Wmisc_strHead(SEXP sSEXP) {
+RcppExport SEXP _Wmisc_strHead(SEXP sSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -18,7 +18,7 @@ END_RCPP
 }
 // strHeadLower
 char strHeadLower(std::string s);
-RcppExport SEXP Wmisc_strHeadLower(SEXP sSEXP) {
+RcppExport SEXP _Wmisc_strHeadLower(SEXP sSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -29,7 +29,7 @@ END_RCPP
 }
 // strTail
 std::string strTail(std::string s);
-RcppExport SEXP Wmisc_strTail(SEXP sSEXP) {
+RcppExport SEXP _Wmisc_strTail(SEXP sSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -40,7 +40,7 @@ END_RCPP
 }
 // strTake
 std::string strTake(std::string s, int n);
-RcppExport SEXP Wmisc_strTake(SEXP sSEXP, SEXP nSEXP) {
+RcppExport SEXP _Wmisc_strTake(SEXP sSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -52,7 +52,7 @@ END_RCPP
 }
 // strDrop
 std::string strDrop(std::string s, int n);
-RcppExport SEXP Wmisc_strDrop(SEXP sSEXP, SEXP nSEXP) {
+RcppExport SEXP _Wmisc_strDrop(SEXP sSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -64,7 +64,7 @@ END_RCPP
 }
 // CWmisc_mmap
 List CWmisc_mmap(std::string path);
-RcppExport SEXP Wmisc_CWmisc_mmap(SEXP pathSEXP) {
+RcppExport SEXP _Wmisc_CWmisc_mmap(SEXP pathSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -75,7 +75,7 @@ END_RCPP
 }
 // CWmisc_munmap
 void CWmisc_munmap(List fdVec);
-RcppExport SEXP Wmisc_CWmisc_munmap(SEXP fdVecSEXP) {
+RcppExport SEXP _Wmisc_CWmisc_munmap(SEXP fdVecSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type fdVec(fdVecSEXP);
@@ -85,7 +85,7 @@ END_RCPP
 }
 // CWmisc_nextToken
 List CWmisc_nextToken(IntegerVector currentPtr, IntegerVector delims);
-RcppExport SEXP Wmisc_CWmisc_nextToken(SEXP currentPtrSEXP, SEXP delimsSEXP) {
+RcppExport SEXP _Wmisc_CWmisc_nextToken(SEXP currentPtrSEXP, SEXP delimsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -97,7 +97,7 @@ END_RCPP
 }
 // CWmisc_validPtr
 bool CWmisc_validPtr(IntegerVector base, IntegerVector target, int offset);
-RcppExport SEXP Wmisc_CWmisc_validPtr(SEXP baseSEXP, SEXP targetSEXP, SEXP offsetSEXP) {
+RcppExport SEXP _Wmisc_CWmisc_validPtr(SEXP baseSEXP, SEXP targetSEXP, SEXP offsetSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -110,7 +110,7 @@ END_RCPP
 }
 // CWmisc_subPtr
 IntegerVector CWmisc_subPtr(IntegerVector a, IntegerVector b);
-RcppExport SEXP Wmisc_CWmisc_subPtr(SEXP aSEXP, SEXP bSEXP) {
+RcppExport SEXP _Wmisc_CWmisc_subPtr(SEXP aSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -122,7 +122,7 @@ END_RCPP
 }
 // CWmisc_addPtr
 IntegerVector CWmisc_addPtr(IntegerVector a, IntegerVector b);
-RcppExport SEXP Wmisc_CWmisc_addPtr(SEXP aSEXP, SEXP bSEXP) {
+RcppExport SEXP _Wmisc_CWmisc_addPtr(SEXP aSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -131,4 +131,24 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(CWmisc_addPtr(a, b));
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_Wmisc_strHead", (DL_FUNC) &_Wmisc_strHead, 1},
+    {"_Wmisc_strHeadLower", (DL_FUNC) &_Wmisc_strHeadLower, 1},
+    {"_Wmisc_strTail", (DL_FUNC) &_Wmisc_strTail, 1},
+    {"_Wmisc_strTake", (DL_FUNC) &_Wmisc_strTake, 2},
+    {"_Wmisc_strDrop", (DL_FUNC) &_Wmisc_strDrop, 2},
+    {"_Wmisc_CWmisc_mmap", (DL_FUNC) &_Wmisc_CWmisc_mmap, 1},
+    {"_Wmisc_CWmisc_munmap", (DL_FUNC) &_Wmisc_CWmisc_munmap, 1},
+    {"_Wmisc_CWmisc_nextToken", (DL_FUNC) &_Wmisc_CWmisc_nextToken, 2},
+    {"_Wmisc_CWmisc_validPtr", (DL_FUNC) &_Wmisc_CWmisc_validPtr, 3},
+    {"_Wmisc_CWmisc_subPtr", (DL_FUNC) &_Wmisc_CWmisc_subPtr, 2},
+    {"_Wmisc_CWmisc_addPtr", (DL_FUNC) &_Wmisc_CWmisc_addPtr, 2},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_Wmisc(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }

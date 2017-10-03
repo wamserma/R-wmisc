@@ -377,10 +377,10 @@ Automat <- R6::R6Class("Automat",
 
 #@ internal
 edge_present_lab<-function(g,from,to){
-  cond1 <- paste0("label == \'",from,"\'")
-  cond2 <- paste0("label == \'",to,"\'")
-  n.from<-DiagrammeR::get_node_ids(g, conditions = cond1)
-  n.to<-DiagrammeR::get_node_ids(g, conditions = cond2)
+  label <- NULL # DiagrammeR::get_node_ids expects quosures but this generates a warning
+  # that 'label' does not have a visible binding
+  n.from<-DiagrammeR::get_node_ids(g, conditions = label == from)
+  n.to<-DiagrammeR::get_node_ids(g, conditions = label == to)
   if ( is.na(n.from) | is.na(n.to) ) {
     return(FALSE)
   } else {

@@ -17,7 +17,6 @@ First of all, we want the package loaded and attached. Same for the benchmarks.
 
 ```{r}
 library(Wmisc)
-library(microbenchmark)
 ```
 
 A string from (http://slipsum.com/).
@@ -46,12 +45,19 @@ substring(s,2)
 
 ## benchmark
 
-The benchmark results will vary greatly depending on the version of R used. With R 3.3 the built-in functions should be preferred.
+The benchmark results will vary greatly depending on the version of R used. With R 3.3 (upwards)
+the built-in functions should be preferred.
 
 ```{r}
-microbenchmark(substr(s,1,1),strHead(s),times=100000)
-microbenchmark(tolower(substr(s,1,1)),strHeadLower(s),times=100000)
-microbenchmark(substring(s,2),strTail(s),times=100000)
+if (requireNamespace("DiagrammeR", quietly = TRUE)) { # only benchmark if microbenchmark is installed
+  library(microbenchmark)
+
+  microbenchmark(substr(s,1,1),strHead(s),times=100000)
+  microbenchmark(tolower(substr(s,1,1)),strHeadLower(s),times=100000)
+  microbenchmark(substring(s,2),strTail(s),times=100000)
+} else {
+  print("The benchmarks were skipped as package microbenchmark is not installed.")
+} 
 ```
 
 # Take and Drop
@@ -67,6 +73,8 @@ strDrop(s,42)
 ```
 
 ```{r}
-microbenchmark(substr(s,1,42),strTake(s,42),times=100000)
-microbenchmark(substring(s,43),strDrop(s,42),times=100000)
+if (requireNamespace("DiagrammeR", quietly = TRUE)) { # only benchmark if microbenchmark is installed
+  microbenchmark(substr(s,1,42),strTake(s,42),times=100000)
+  microbenchmark(substring(s,43),strDrop(s,42),times=100000)
+}  
 ```

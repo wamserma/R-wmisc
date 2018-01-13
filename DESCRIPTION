@@ -2,7 +2,7 @@ Package: Wmisc
 Type: Package
 Title: Wamser Misc: Reading Files by Tokens, Stateful Computations, Utility Functions  
 Version: 0.3.4
-Date: 2017-01-13
+Date: 2018-01-13
 Authors@R: person("Markus S.", "Wamser", email = "r-wmisc@devel.wamser.eu",
   role = c("aut", "cre"))
 Description: A tokenizer to read a text file token by token with a very lightweight API, a framework for stateful computations with finite state machines and a few string utility functions. 
